@@ -98,6 +98,58 @@ class Display extends Component {
         }
     }
 
+    handleCanvasClick(event) {
+        const el = event.currentTarget.getBoundingClientRect();
+        const elX = el.left;
+        const elY = el.top;
+        let x = event.clientX;
+        let y = event.clientY;
+        x = x - elX;
+        y = y - elY;
+        x = x < 0 ? 0 : x;
+        y = y < 0 ? 0 : y;
+
+        x =  Math.floor(x / (this.props.state.displayProperties.displayWidth / this.props.state.displayProperties.elementsWidth;));
+        y = Math.floor(y / (this.props.state.displayProperties.displayHeight / this.props.state.displayProperties.elementsHeight));
+        let newMatrix = _.cloneDeep(this.props.state.display.matrix);
+        let lastId = this.props.state.display.lastId;
+
+
+
+        if(newMatrix[y][x].active) {
+            newMatrix[y][x] = {
+                active: false,
+                id: 0,
+                color: '#000000',
+                edge: false,
+            }
+        } else {
+            let colors = this.props.state.display.colors;
+            let colorExist, color;
+            while(true) {
+                colorExist = false;
+                color = Math.floor(Math.random() * 16777215).toString(16);
+                while(color.length - 6 < 0) {
+                    color = '0'+color;
+                }
+                color = '#' + color;
+                colors.forEach((c)=>{
+                    if(c === color) colorExist = true;
+                });
+                if(!colorExist) break;
+            }
+
+            newMatrix[y][x] = {
+                active: true,
+                id: ++lastId,
+                color: color,
+            }
+        }
+
+        this.props.updateMatrix(newMatrix);
+    }
+
+
     render() {
         return (
             <div id="display" >

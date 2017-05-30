@@ -8,6 +8,9 @@ div#main-app {
 
 div#menu {
     background-color: #d5d5d5;
+    width: 190px;
+    float: left;
+    font-size: small;
 }
 
 div.input-panel {
@@ -17,7 +20,6 @@ div.input-panel {
     background-color: #cccccc;
     display: inline-table;
     width: 170px;
-    height: 200px;
 }
 
 div.input-panel label.header{
@@ -32,12 +34,14 @@ div.input-panel input.radio {
 div.input-panel input.number {
     float: right;
     width: 50px;
+    font-size: small;
 }
 
 div.input-panel label.number {
     padding-left: 20px;
     float: left;
     margin: 3px;
+    font-size: small;
 }
 
 div.text-input {
@@ -46,6 +50,7 @@ div.text-input {
 
 div.text-input input {
     width: 50px;
+    font-size: small;
 }
 
 div.text-input.unactive {

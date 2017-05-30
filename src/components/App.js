@@ -30,7 +30,7 @@ class App extends Component {
 
     render() {
         const divStyle = {
-            height: this.props.app.height + 'px',
+            //height: this.props.app.height + 'px',
             width: this.props.app.width + 'px',
         }
         return (
