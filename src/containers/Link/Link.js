@@ -17,7 +17,10 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, { to }) => ({
-  changeLocation: () => dispatch(changeLocation(to)),
+  changeLocation: (event) => {
+    // event.preventDefault();
+    return dispatch(changeLocation(to));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Link);

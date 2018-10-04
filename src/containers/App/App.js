@@ -6,6 +6,7 @@ import HowToPage from '../HowToPage';
 import ImportPage from '../ImportPage';
 import SimulatorPage from '../SimulatorPage';
 import { getLocation } from '../../selectors/router';
+import './style.scss';
 
 class App extends Component {
   render() {

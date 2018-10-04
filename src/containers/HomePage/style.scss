@@ -1,22 +1,13 @@
 .home-page {
   background-image: url('../../assets/home-page-background.jpg');
   overflow:hidden;
-  width: 100vw;
-  height: 100vh;
-}
-
-footer {
-  padding: 1em;
-  color: #bebebe;
-  background-color: #00000021;
-  font-size: 0.8em;
-  font-family: serif;
+  height: 100%;
 }
 
 header {
-  position: relative;
+  position: absolute;
   left: calc(90% - 400px);
-  top: 300px;
+  top: calc(90% - 200px);
   color: white;
   background-color: #00000021;
   width: 22em;
@@ -27,7 +18,7 @@ header {
 
 .links {
   width: 400px;
-  position: relative;
+  position: absolute;
   top: 25%;
   left: 5%;
   display: flex;
