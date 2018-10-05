@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import Link from '../Link';
-import { getLocation } from '../../selectors/router';
+import { Link, withRouter } from 'react-router-dom';
 
 import IconButton from '../../components/IconButton';
 import homeIcon from '../../assets/home-icon.png';
@@ -31,13 +28,13 @@ const routes = [{
 
 class Navigation extends Component {
   render() {
-    const { location } = this.props;
+    const { match: { path: pathname } } = this.props;
     return (
       <div className="navigation">
         {
           routes.map(({ text, path, icon }) => (
-            <Link to={path} key={`${text}-icon-key`}>
-              <IconButton icon={icon} text={text} active={location === path}/>
+            <Link className="navigation-link" to={path} key={`${text}-icon-key`}>
+              <IconButton icon={icon} text={text} active={pathname === path}/>
             </Link>
           ))
         }
@@ -46,12 +43,4 @@ class Navigation extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  location: getLocation(state),
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default withRouter(Navigation);

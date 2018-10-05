@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import GeneralFooter from '../../components/GeneralFooter';
-import Link from '../Link';
+// import Link from '../Link';
 import './style.scss';
 
 class HomePage extends Component {

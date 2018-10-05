@@ -1,11 +1,9 @@
 import { combineReducers, createStore } from 'redux';
 
 import currentGridReducer from './current-grid';
-import routerReducer from './router';
 
 const rootReducer = combineReducers({
     currentGrid: currentGridReducer,
-    router: routerReducer,
 });
 
 const store = createStore(

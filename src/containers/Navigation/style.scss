@@ -1,0 +1,9 @@
+.navigation {
+    margin: 2em 0;
+    display: flex;
+    justify-content: center;
+
+    &-link {
+        margin: 0 2em;
+    }
+}
