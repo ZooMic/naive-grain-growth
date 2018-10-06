@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MainLayout from '../MainLayout';
+import GridCanvas from '../../components/GridCanvas';
 import './style.scss';
 
 class SimulatorPage extends Component {
@@ -7,9 +8,10 @@ class SimulatorPage extends Component {
     return (
       <MainLayout>
         <div className="simulator-page">
-          <div>Simulator Page</div>
-          {/* <Simulator simulator state/> */}
-          {/* <Menu /> */}
+          <GridCanvas className="simulator-canvas" />
+          <div className="simulator-menu">
+            Menu
+          </div> 
         </div>
       </MainLayout>
     );
