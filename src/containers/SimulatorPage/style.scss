@@ -1,9 +1,27 @@
 .simulator-page {
-  padding: 0 1em;
+  // padding: 0 1em;
+  width: 100%;
   display: inline-flex;
 }
 
-.simulator-cavas {
-  background-color: #a587a4;
-  min-width: 620px;
+.simulator-canvas {
+  width: 100%;
+  height: calc(100vh - 300px);
+  background-color: black;
+  border: 1em solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2em;
+
+  & canvas {
+      background-color: #a587a4;
+  }
+}
+
+.simulator-menu {
+  min-width: 300px;
+  width: 40%;
+  background-color: white;
+  margin-right: 2em;
 }
