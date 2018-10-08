@@ -1,0 +1,25 @@
+.simulator-menu {
+  min-width: 300px;
+  width: 40%;
+  background-color: #6c5170;
+  margin-right: 2em;
+  border: 1em solid #7f1e4d;
+  border-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.inputs-group {
+  padding: 1em;
+  margin: 5px;
+  text-align: center;
+  background-color: #ffffff26;
+  border-radius: 1em;
+  max-width: 10em;
+  & .label {
+    display: block;
+    font-weight: 900;
+    color: whitesmoke;
+  }
+}

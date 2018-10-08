@@ -65,11 +65,11 @@ class GridCanvas extends Component {
   render() {
     const {
       onRef,
-      props: { className, size, cellSize },
+      props: { className, gridSize, cellSize },
     } = this;
 
-    const actualWidth = size.width * cellSize.width;
-    const actualHeight = size.height * cellSize.height;
+    const actualWidth = gridSize.columns * cellSize.width;
+    const actualHeight = gridSize.rows * cellSize.height;
 
     return (
       <div className={className}>
@@ -83,6 +83,7 @@ class GridCanvas extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.clearGrid();
     this.drawGrid();
   }
 
@@ -96,9 +97,9 @@ GridCanvas.propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
   }),
-  size: PropTypes.shape({
-    width: PropTypes.number,
-    height: PropTypes.number,
+  gridSize: PropTypes.shape({
+    rows: PropTypes.number,
+    columns: PropTypes.number,
   }),
   data: PropTypes.arrayOf(PropTypes.shape({
     x: PropTypes.number,
@@ -108,29 +109,9 @@ GridCanvas.propTypes = {
 }
 
 GridCanvas.defaultProps = {
-  data: [
-    {x: 0, y: 0, color: '#FF0'},
-    {x: 1, y: 1, color: '#CCC'},
-    {x: 2, y: 2, color: '#CCC'},
-    {x: 3, y: 3, color: '#CCC'},
-    {x: 4, y: 4, color: '#CCC'},
-    {x: 5, y: 5, color: '#CCC'},
-    {x: 6, y: 6, color: '#CCC'},
-    {x: 6, y: 7, color: '#AAA'},
-    {x: 6, y: 8, color: '#888'},
-    {x: 6, y: 9, color: '#CCC'},
-    {x: 20, y: 20, color: '#CCC'},
-    {x: 30, y: 30, color: '#CCC'},
-    {x: 40, y: 40, color: '#CCC'},
-    {x: 50, y: 50, color: '#CCC'},
-    {x: 60, y: 60, color: '#CCC'},
-    {x: 70, y: 70, color: '#CCC'},
-    {x: 98, y: 98, color: '#CCC'},
-    {x: 98, y: 99, color: '#CCC'},
-    {x: 99, y: 99, color: '#CCC'},
-  ],
+  data: [],
   cellSize: { width: 10, height: 10 },
-  size: { width: 50, height: 50 },
+  gridSize: { rows: 60, columns: 60 },
 }
 
 export default GridCanvas;
