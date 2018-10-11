@@ -2,36 +2,55 @@ import randomColor from 'random-color';
 
 export const initialize = (randomSeed, gridSize) => {
   const { rows: r, columns: c } = gridSize;
+  
   const data = [];
+  for (let i = 0; i < gridSize.rows; i++) {
+    data.push(new Array(gridSize.columns))
+  }
+
   for (let i = 0; i < randomSeed; i++) {
     const row = Math.floor(Math.random() * r);
     const col = Math.floor(Math.random() * c);
     const color = randomColor().hexString();
 
-    const id = data.findIndex((x, y) => {
-      return x === row && y === col;
-    });
-
-    if (id === -1) {
-      data.push({
-        x: row, y: col, color,
-      });
+    if(!data[row][col]) {
+      data[row][col] = color;
     } else {
-      i--;
+      i -= 1;
     }
   }
+
   return data;
 }
 
 export const nextStep = (neighbourDeterminator, data, gridSize, onFinish) => {
-  const newData = [];
-  data.forEach(cell => {
-    Array.prototype.push.apply(newData, neighbourDeterminator(cell, gridSize));
-  });
+  
+  let newData = new Array(gridSize.rows);
+  for ( let i = 0; i < gridSize.rows; i++) {
+    newData[i] = [];
+    for (let j = 0; j < gridSize.columns; j++) {
+      newData[i].push(data[i][j]);
+    }  
+  }
+  
+  for(let i = 0; i < gridSize.rows; i++) {
+    for (let j = 0; j < gridSize.columns; j++) {
+      newData[i][j] = neighbourDeterminator({x: j, y: i}, gridSize, data);
+    }
+  }
 
-  if (gridSize.rows * gridSize.columns <= newData.length + data.length) {
+  let counter = 0;
+  for(let i = 0; i < gridSize.rows; i++) {
+    for (let j = 0; j < gridSize.columns; j++) {
+      if(!!newData[i][j]) {
+        counter += 1;
+      }
+    }
+  }
+
+  if (gridSize.rows * gridSize.columns <= counter) {
     onFinish();
   }
 
-  return [...data, ...newData];
+  return newData;
 }

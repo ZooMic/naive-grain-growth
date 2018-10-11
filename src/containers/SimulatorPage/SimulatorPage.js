@@ -8,6 +8,8 @@ import SimulatorMenu from '../SimulatorMenu';
 import defaultConfig from './helpers/default-config';
 
 import { initialize } from '../../operations/common';
+import neumann from '../../operations/neumann';
+import moore from '../../operations/moore';
 
 import { getCurrentGrid } from '../../selectors/current-grid';
 
@@ -15,7 +17,6 @@ import './style.scss';
 
 class SimulatorPage extends Component {
   render() {
-
     const { cellSize, gridSize, common: { randomSeed }, operationName } = this.props;
 
     let data = [];
@@ -23,10 +24,37 @@ class SimulatorPage extends Component {
       data = initialize(randomSeed, gridSize);
     }
 
+    const finalData = [];
+
+    let finish = false;
+    const onFinish = () => {
+      finish = true;
+    }
+
+    if (operationName === 'neumann') {
+      while(!finish) {
+        data = neumann(data, gridSize, onFinish);
+      }
+    }
+
+    if (operationName === 'moore') {
+      while(!finish) {
+        data = moore(data, gridSize, onFinish);
+      }
+    }
+
+    data.forEach((array, x) => {
+      array.forEach((color, y) => {
+        if (!!color) {
+          finalData.push({x, y, color});
+        }
+      });
+    });
+
     return (
       <MainLayout>
         <div className="simulator-page">
-          <GridCanvas className="simulator-canvas" cellSize={cellSize} gridSize={gridSize} data={data} />
+          <GridCanvas className="simulator-canvas" cellSize={cellSize} gridSize={gridSize} data={finalData} />
           <SimulatorMenu />
         </div>
       </MainLayout>
