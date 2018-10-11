@@ -1,0 +1,19 @@
+.custom-input {
+    padding: 10px;
+    margin-bottom: 10px;
+    &.invalid {
+        border: 3px solid #980000;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px #980000;
+    }
+}
+
+.custom-input-error {
+    font-size: 9px;
+    letter-spacing: 0px;
+    color: #9c0303;
+    display: block;
+    line-height: 9px;
+    position: relative;
+    top: -15px;
+}

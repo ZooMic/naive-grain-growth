@@ -7,70 +7,95 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InputMUI from 'muicss/lib/react/input';
-import checkRequired from './helpers'; 
+import { checkRequired } from './helpers'; 
+import 'muicss/dist/css/mui.css';
+import './style.scss';
 
 class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      defaultValue: '',
       currentValue: '',
       validation: {
         isValid: true,
-        msg: '',
+        message: '',
       },
     };
   }
 
-  static getDerivedStateFromProps(props) {
-    const { value } = props;
-    return {
-      defaultValue: value,
-    }
-  }
-
-  onChange = (event) => {
-    const value = event.target.value;
+  componentDidMount() {
+    const { value : v } = this.props;
+    const value = (v && v.toString) ? v.toString() : '';
     this.setState({
       currentValue: value,
     });
   }
 
-  onFocus = () => {
-    const { currentValue, defaultValue, validation: { isValid } } = this.state;
+  onChange = (event) => {
+    const value = event.target.value;
+    const { isRequired, validator, validators } = this.props;
+    let validation = { isValid: true, message: '' };
+    if (isRequired) {
+      validation = checkRequired(value);
+    } else if (validator) {
+      validation = validator(value);
+    } else if (validators && validators.lenght > 0) {
+      validators.forEach(v => {
+        const result = v(value);
+        const { isValid } = result;
+        validation = isValid ? validation : result;
+      });
+    }
+
     this.setState({
-      currentValue: isValid ? defaultValue : currentValue,
+      currentValue: value,
+      validation,
     });
   }
 
+  onFocus = (event) => {
+    event.target.select();
+  }
+
   onBlur = () => {
-    const { currentValue } = this.state;
-    const { isValid, message } = checkRequired(currentValue);
-    const { onChange, isRequired } = this.props;
+    const {
+      state: { currentValue, validation: { isValid } },
+      props: { onChange },
+    } = this;
+
     if (isValid) {
-      this.setState({
-
-      });
-    } else {
-
+      onChange(currentValue);
     }
   }
 
   render() {
-    return null;
+    const {
+      state: { currentValue, validation: { isValid, message } },
+      props: { label, value },
+      onChange, onBlur,
+    } = this;
+    return (
+      <div className={`custom-input ${!isValid ? 'invalid' : ''}`}>
+        <InputMUI label={label} floatingLabel value={currentValue} onChange={onChange} onBlur={onBlur} />
+        { !isValid ? <span className="custom-input-error">{message} Due to the error current used value is {value}.</span> : null }
+      </div>
+    );
   }
 }
 
 Input.propTypes = {
+  label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   isRequired: PropTypes.bool,
-  validation: PropTypes.func,
+  validator: PropTypes.func,
+  validators: PropTypes.arrayOf(PropTypes.func),
 };
 
 Input.defaultProps = {
   isRequired: false,
-  validation: null, 
+  validator: null, 
+  validators: [],
 };
 
 export default Input;

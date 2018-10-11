@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Input from 'muicss/lib/react/input';
 import Button from 'muicss/lib/react/button';
+import Input from '../../components/Input';
 import { setOperation, setCellSize } from '../../actions/current-grid';
 import { getCurrentGrid } from '../../selectors/current-grid';
 import 'muicss/dist/css/mui.css';
@@ -14,8 +14,8 @@ class SimulatorMenu extends Component {
     this.props.setOperation(operationName);
   }
 
-  onSetCellSize = (parameterName) => (event) => {
-    const value = parseInt(event.target.value);
+  onSetCellSize = (parameterName) => (eventValue) => {
+    const value = parseInt(eventValue);
     const cellSize = { ...this.props.cellSize };
     if (!isNaN(value) && value > 0) {
       cellSize[parameterName] = value;
@@ -31,7 +31,7 @@ class SimulatorMenu extends Component {
       gridSize,
       common: { randomSeed },
     } = this.props;
-    const { onRunOperationClick, onSetCellSize, onRef, onFocus, onBlur } = this;
+    const { onRunOperationClick, onSetCellSize } = this;
 
     return (
       <div className="simulator-menu">
@@ -42,22 +42,24 @@ class SimulatorMenu extends Component {
             floatingLabel
             value={cellSize.width}
             onChange={onSetCellSize('width')}
+            isRequired
           />
           <Input
             label="Height"
             floatingLabel
             value={cellSize.height}
             onChange={onSetCellSize('height')}
+            isRequired
           />
         </div>
         <div className="inputs-group">
           <span className="label">GRID SIZE</span>
-          <Input label="Rows" floatingLabel value={gridSize.rows} />
-          <Input label="Columns" floatingLabel value={gridSize.columns} />
+          <Input label="Rows" floatingLabel value={gridSize.rows} onChange={x => x} />
+          <Input label="Columns" floatingLabel value={gridSize.columns} onChange={x => x} />
         </div>
         <div className="inputs-group">
           <span className="label">COMMON</span>
-          <Input label="Random seed" floatingLabel value={randomSeed} />
+          <Input label="Random seed" floatingLabel value={randomSeed} onChange={x => x} />
         </div>
         <div className="inputs-group">
           <span className="label">RUN</span>
