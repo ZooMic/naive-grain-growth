@@ -1,9 +1,3 @@
-/**
- * required parameters
- * - validation - function for validation string (state.value, setState) => (setState({valid: true|false, errorMsg: ""}))
- * - required | notEmpty
- */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InputMUI from 'muicss/lib/react/input';
@@ -35,11 +29,16 @@ class Input extends Component {
     const value = event.target.value;
     const { isRequired, validator, validators } = this.props;
     let validation = { isValid: true, message: '' };
+
     if (isRequired) {
       validation = checkRequired(value);
-    } else if (validator) {
+    }
+    
+    if (validator && validation.isValid) {
       validation = validator(value);
-    } else if (validators && validators.lenght > 0) {
+    }
+    
+    if (validators && validators.length > 0 && validation.isValid) {
       validators.forEach(v => {
         const result = v(value);
         const { isValid } = result;
@@ -74,6 +73,7 @@ class Input extends Component {
       props: { label, value },
       onChange, onBlur,
     } = this;
+
     return (
       <div className={`custom-input ${!isValid ? 'invalid' : ''}`}>
         <InputMUI label={label} floatingLabel value={currentValue} onChange={onChange} onBlur={onBlur} />

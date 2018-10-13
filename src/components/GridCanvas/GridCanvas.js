@@ -19,7 +19,7 @@ class GridCanvas extends Component {
     if (ctx) {
       data.forEach((item) => {
         ctx.fillStyle=item.color;
-        ctx.fillRect(item.x * w, item.y * h, w, h);
+        ctx.fillRect(item.y * w, item.x * h, w, h);
       });
     }
   }

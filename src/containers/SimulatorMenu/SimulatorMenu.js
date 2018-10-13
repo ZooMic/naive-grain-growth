@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
-import Input from '../../components/Input';
-import { setOperation, setCellSize } from '../../actions/current-grid';
+import { NumberInput } from '../../components/Input';
+import { setOperation, setCellSize, setGridSize, setRandomSeed } from '../../actions/current-grid';
 import { getCurrentGrid } from '../../selectors/current-grid';
 import 'muicss/dist/css/mui.css';
 import './style.scss';
@@ -25,41 +25,41 @@ class SimulatorMenu extends Component {
     this.props.setCellSize(cellSize);
   }
 
+  onSetGridSize = (parameterName) => (eventValue) => {
+    const value = parseInt(eventValue);
+    const gridSize = { ...this.props.gridSize };
+    gridSize[parameterName] = value;
+    this.props.setGridSize(gridSize);
+  }
+
+  onSetRandomSeed = (eventValue) => {
+    const value = parseInt(eventValue);
+    this.props.setRandomSeed(value);   
+  }
+
   render() {
     const {
       cellSize,
       gridSize,
       common: { randomSeed },
     } = this.props;
-    const { onRunOperationClick, onSetCellSize } = this;
-
+    const { onRunOperationClick, onSetCellSize, onSetGridSize, onSetRandomSeed } = this;
+    const maxRandomSeed = gridSize.rows * gridSize.columns;
     return (
       <div className="simulator-menu">
         <div className="inputs-group">
           <span className="label">CELL SIZE</span>
-          <Input
-            label="Width"
-            floatingLabel
-            value={cellSize.width}
-            onChange={onSetCellSize('width')}
-            isRequired
-          />
-          <Input
-            label="Height"
-            floatingLabel
-            value={cellSize.height}
-            onChange={onSetCellSize('height')}
-            isRequired
-          />
+          <NumberInput label="Width" value={cellSize.width} onChange={onSetCellSize('width')} isRequired isInteger min={1} max={20} />
+          <NumberInput label="Height" value={cellSize.height} onChange={onSetCellSize('height')} isRequired isInteger min={1} max={20} />
         </div>
         <div className="inputs-group">
           <span className="label">GRID SIZE</span>
-          <Input label="Rows" floatingLabel value={gridSize.rows} onChange={x => x} />
-          <Input label="Columns" floatingLabel value={gridSize.columns} onChange={x => x} />
+          <NumberInput label="Rows" value={gridSize.rows} onChange={onSetGridSize('rows')} isRequired isInteger min={10} max={500} />
+          <NumberInput label="Columns" value={gridSize.columns} onChange={onSetGridSize('columns')} isRequired isInteger min={10} max={500} />
         </div>
         <div className="inputs-group">
           <span className="label">COMMON</span>
-          <Input label="Random seed" floatingLabel value={randomSeed} onChange={x => x} />
+          <NumberInput label="Random seed" value={randomSeed} onChange={onSetRandomSeed} isRequired isInteger min={1} max={maxRandomSeed} />
         </div>
         <div className="inputs-group">
           <span className="label">RUN</span>
@@ -93,6 +93,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   setOperation: setOperation(dispatch),
   setCellSize: debounce(setCellSize(dispatch), 150),
+  setGridSize: debounce(setGridSize(dispatch), 150),
+  setRandomSeed: debounce(setRandomSeed(dispatch), 150),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimulatorMenu);

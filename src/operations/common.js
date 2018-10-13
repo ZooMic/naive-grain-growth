@@ -49,7 +49,7 @@ export const nextStep = (neighbourDeterminator, data, gridSize, onFinish) => {
   }
 
   if (gridSize.rows * gridSize.columns <= counter) {
-    onFinish();
+    onFinish(newData);
   }
 
   return newData;
