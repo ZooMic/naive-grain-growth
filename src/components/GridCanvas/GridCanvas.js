@@ -54,6 +54,8 @@ class GridCanvas extends Component {
     }
     this.canvasRef = ref;
     this.canvasContext = ref.getContext('2d');
+    const { onRef } = this.props;
+    onRef && onRef(ref);
   }
 
   componentDidMount() {

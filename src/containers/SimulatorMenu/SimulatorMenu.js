@@ -8,6 +8,7 @@ import { getCurrentGrid } from '../../selectors/current-grid';
 import 'muicss/dist/css/mui.css';
 import './style.scss';
 import debounce from '../../helpers/debounce';
+import { getGlobalCanvas } from '../../helpers/globalCanvas';
 
 class SimulatorMenu extends Component {
   onRunOperationClick = (operationName) => () => {
@@ -37,13 +38,50 @@ class SimulatorMenu extends Component {
     this.props.setRandomSeed(value);   
   }
 
+  onExportToText = () => {
+    const { grid } = this.props;
+    const filename = 'data-grid.json';
+    const jsonString = JSON.stringify(grid);
+    const element = document.createElement('a');
+    const blob = new Blob([jsonString], {type: "octet/stream"});
+    const url = window.URL.createObjectURL(blob);
+
+    element.setAttribute('href', url);
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  onExportToImage = () => {
+    const canvas = getGlobalCanvas();
+    const img = canvas.toDataURL("image/png");
+
+    const element = document.createElement('a');
+    element.setAttribute('href', img);
+    element.setAttribute('download', "image-grid.png");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
   render() {
     const {
-      cellSize,
-      gridSize,
-      common: { randomSeed },
-    } = this.props;
-    const { onRunOperationClick, onSetCellSize, onSetGridSize, onSetRandomSeed } = this;
+      props: {
+        cellSize,
+        gridSize,
+        common: { randomSeed }
+      },
+      onRunOperationClick,
+      onSetCellSize,
+      onSetGridSize,
+      onSetRandomSeed,
+      onExportToText,
+      onExportToImage,
+    } = this;
+
     const maxRandomSeed = gridSize.rows * gridSize.columns;
     return (
       <div className="simulator-menu">
@@ -66,6 +104,11 @@ class SimulatorMenu extends Component {
           <Button size="small" variant="raised" color="accent" onClick={onRunOperationClick('neumann')}>Neumann</Button>
           <Button size="small" variant="raised" color="accent" onClick={onRunOperationClick('moore')}>Moore</Button>
         </div>
+        <div className="inputs-group">
+          <span className="label">EXPORTS</span>
+          <Button size="small" variant="raised" color="accent" onClick={onExportToText}>Text</Button>
+          <Button size="small" variant="raised" color="accent" onClick={onExportToImage}>Image</Button>
+        </div>
       </div>
     );
   }
@@ -86,8 +129,8 @@ SimulatorMenu.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  const { cellSize, gridSize, common } = getCurrentGrid(state);
-  return { cellSize, gridSize, common };
+  const { cellSize, gridSize, common, grid } = getCurrentGrid(state);
+  return { cellSize, gridSize, common, grid };
 };
 
 const mapDispatchToProps = (dispatch) => ({

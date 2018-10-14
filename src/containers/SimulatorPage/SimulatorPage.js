@@ -9,6 +9,7 @@ import SimulatorMenu from '../SimulatorMenu';
 import procedure from '../../operations/procedure';
 import { getCurrentGrid } from '../../selectors/current-grid';
 import { setOperation, saveDataGrid } from '../../actions/current-grid';
+import { setGlobalCanvas } from '../../helpers/globalCanvas';
 
 import './style.scss';
 
@@ -66,10 +67,17 @@ class SimulatorPage extends Component {
     });
   }
 
+  onRef = (node) => {
+    if (node) {
+      setGlobalCanvas(node);
+    }
+  }
+
   render() {
     const {
       props: { cellSize, gridSize, grid },
       state: { data },
+      onRef,
     } = this;
 
     const currentGrid = data.length === 0 ? grid : data;
@@ -86,7 +94,7 @@ class SimulatorPage extends Component {
     return (
       <MainLayout>
         <div className="simulator-page">
-          <GridCanvas className="simulator-canvas" cellSize={cellSize} gridSize={gridSize} data={finalData} />
+          <GridCanvas className="simulator-canvas" cellSize={cellSize} gridSize={gridSize} data={finalData} onRef={onRef}/>
           <SimulatorMenu />
         </div>
       </MainLayout>
