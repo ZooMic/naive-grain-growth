@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import FileDrop from 'react-file-drop';
 import MainLayout from '../MainLayout';
-
+import { NumberInput } from '../../components/Input';
+import getGridDataFromImage from './helper/getGridDataFromImage';
 // import imageFile from '../../assets/image-file.png';
 // import textFile from '../../assets/text-file.png';
 import './style.scss';
@@ -9,91 +9,117 @@ import './style.scss';
 class ImportPage extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      imageTargetInitialized: false,
-      fileTargetInitialized: false,
-    }
-
-    this.fileTarget = null;
-    this.imageTarget = null;
-
     this.imageCanvas = null;
-    this.textCanvas = null;
+    
+    this.state = {
+      grid: null,
+      typeOfInput: null, // one of JSON | IMAGE | NO_MATCH
+      cellSize: {
+        width: 1,
+        height: 1,
+      },
+    };
   }
 
-  onDrop = (event) => {
-    event.preventDefault();
-    const items = event.dataTransfer.items;
-    if (items && items.length > 0) {
-      const file = items[0].getAsFile();
-      const isImage = file.type.includes('image');
-      if (isImage) {
-        var reader  = new FileReader();
-        
-        // const url = reader.readAsDataURL(file);
-        // const objectURL = URL.createObjectURL(file);
-        // const image = new Image();
-        // image.src = url;
-        // const ctx = this.imageCanvas.getContext("2d");
-        // ctx.drawImage(image, 100, 100);
-        // console.log("url", file);
+  jsonInputHandler = (file) => {
+    let reader = new FileReader();
+    reader.readAsText(file);
+    let grid = null;
+    reader.onload = e => {
+      try {
+        grid = JSON.parse(e.target.result);
+        this.setState({ grid });
+      } catch (error) {
+        console.error(error);
       }
     }
   }
 
-  onFrameDragEnter = (event) => {
-    console.log("onFrameDragEnter", event);
-  }
+  imageInputHandler = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    const { cellSize } = this.state;
+    const ctx = this.imageCanvas.getContext("2d"); 
+    const img = new Image();
 
-  onRef = (refName) => (node) => {
-    if (node && this[refName] !== node) {
-      this[refName] = node;
-      this.setState({
-        [`${refName}Initialized`]: true,
-      });
+    reader.onload = e => {
+      img.onload = () => {
+        const { height, width } = img;
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+        ctx.drawImage(img, 0, 0);
+        this.setState({
+          grid: getGridDataFromImage(this.imageCanvas, cellSize),
+        });
+      }
+      img.src = e.target.result;
     }
   }
 
-  onCanvasRef = (refName) => (node) => {
+  onFileInputChange = (event) => {
+    const files = event.target.files;
+    const file = files && files[0];
+
+    if (file.type.includes('json')) {
+      this.jsonInputHandler(file);
+      this.setState({ typeOfInput: 'JSON' });
+      return;
+    }
+
+    if (file.type.includes('image')) {
+      this.imageInputHandler(file);
+      this.setState({ typeOfInput: 'IMAGE' });
+      return;
+    }
+
+    this.setState({ typeOfInput: 'NO_MATCH' });
+  }
+
+  onImageCanvasRef = (node) => {
     if (node) {
-      this[refName] = node;
+      this.imageCanvas = node;
     }
+  }
+
+  onInputChange = (parameterName) => (eventValue) => {
+    const cellSize = { ...(this.state.cellSize || {}) };
+    cellSize[parameterName] = eventValue;
+    this.setState({ cellSize });
   }
 
   render() {
     const {
-      onRef,
-      onCanvasRef,
-      fileTarget,
-      imageTarget,
-      onDrop,
-      onFrameDragEnter,
-      state: { imageTargetInitialized, fileTargetInitialized },
+      onImageCanvasRef, onInputChange, onFileInputChange,
+      state: { cellSize, typeOfInput },
     } = this;
-
-    console.log("IMAGE TARGET", imageTargetInitialized, imageTarget, this);
 
     return (
       <MainLayout>
         <div className="import-page">
-          <div className="parameters">
-            <h3>Specify basic parameters for the uploaded file</h3>
+          <div className="import">
+            <h3>Import file</h3>
+            <input type="file" id="input" onChange={onFileInputChange} />
+            <canvas className="display-none" ref={onImageCanvasRef} />
           </div>
-          <div className="text-import">
-            <h3>Import text file</h3>
-            {/* <img src={textFile} alt="" /> */}
-          </div>
-          <div className="image-import">
-            <h3>Import image</h3>
-            {/* <img src={imageFile} alt="" /> */}
-            <div className="image-import-content" ref={onRef('imageTarget')} >
-              { imageTargetInitialized ?
-                <FileDrop onFrameDrop={onDrop} onFrameDragEnter={onFrameDragEnter} frame={imageTarget} dropEffect="link" />
-                : null }
-            </div>
-            <canvas ref={onCanvasRef('imageCanvas')} />
-          </div>
+          
+          { typeOfInput === 'IMAGE' ?
+            <div className="image-import">
+              <span>Image import require you to set cell size that you expect to gain from the image.</span>
+              <span>You can allways check interpretation of inported image on the preview.</span>
+              <div className="input-groupe">
+                <span className="label">CELL SIZE</span>
+                <NumberInput label="Width" value={cellSize.width} onChange={onInputChange('width')} isRequired isInteger min={1} max={100} />
+                <NumberInput label="Height" value={cellSize.height} onChange={onInputChange('height')} isRequired isInteger min={1} max={100} />
+              </div>
+            </div> : null }
+          { typeOfInput === 'IMAGE' || typeOfInput === 'JSON' ?
+            <div className="preview">
+            </div> : null }
+
+          { typeOfInput === 'NO_MATCH' ?
+            <div className="no-match-import">
+              <span>This file type is not supported.</span>
+            </div> : null }
         </div>
       </MainLayout>
     );
