@@ -1,3 +1,119 @@
 .import-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
+  & .file-drop {
+    width: 50%;
+    height: 250px;
+    padding: 2em;
+    background-color: #ffffff20;
+    margin: 2em;
+  }
+
+  & .file-drop-target {
+    color: white;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed white;
+    background-color: #ffffff20;
+    background-image: url('../../assets/file-import.png');
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  & .file-drop-dragging-over-frame {
+    background-color: #ffffff60;
+  }
+
+  & .no-display {
+    display: none;
+  }
+
+  & .preview {
+    padding: 1em;
+    background-color: #ffffff20;
+  }
+
+  & .after-import {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  & .input-group {
+    display: inline-flex;
+    width: 280px;
+    background-color: #ffffff40;
+    padding: 2em 1em 0 1em;
+    margin-bottom: 1em;
+
+    & .label {
+      display: block;
+      font-weight: 900;
+      color: whitesmoke;
+      padding: 0 1em;
+    }
+  
+    & .mui-textfield > input, .mui-textfield > textarea {
+      color: white;
+      border-bottom: 1px solid white;
+    }
+
+    & .mui-textfield--float-label > input:not(:focus).mui--is-not-empty ~ label, .mui-textfield--float-label > input:not(:focus) {
+      color: white;
+    }
+  }
+
+  & .import-header {
+    color: white;
+    font-size: 18px;
+    padding: 1em;
+  }
+
+  & .input-and-buttons-wrapper {
+    display: inline-flex;
+
+    & .buttons-group {
+      display: flex;
+      flex-direction: column;
+      width: 45px;
+      margin-left: 1em;
+
+      & .cancel {
+        height: 45px;
+        background-color: #8b0000;
+        background-image: url('../../assets/cancel.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        border: none;
+
+        &:hover {
+          background-color: #c93b3b;
+        }
+      }
+
+      & .save {
+        height: 60px;
+        background-color: #105010;
+        background-image: url('../../assets/save.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        border: none;
+
+        &:hover {
+          background-color: #1f871f;
+        }
+      }
+    }
+  }
+
+  & .error {
+    color: red;
+    background-color: #5700006e;
+    padding: 2em;
+  }
 }

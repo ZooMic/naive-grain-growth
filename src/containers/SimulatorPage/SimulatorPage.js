@@ -12,6 +12,7 @@ import { setOperation, saveDataGrid } from '../../actions/current-grid';
 import { setGlobalCanvas } from '../../helpers/globalCanvas';
 
 import './style.scss';
+import gridToData from '../../helpers/gridToData';
 
 class SimulatorPage extends Component {
   constructor(props) {
@@ -81,15 +82,7 @@ class SimulatorPage extends Component {
     } = this;
 
     const currentGrid = data.length === 0 ? grid : data;
-
-    const finalData = [];
-    currentGrid.forEach((array, x) => {
-      array.forEach((color, y) => {
-        if (!!color) {
-          finalData.push({x, y, color});
-        }
-      });
-    });
+    const finalData = gridToData(currentGrid);
 
     return (
       <MainLayout>
