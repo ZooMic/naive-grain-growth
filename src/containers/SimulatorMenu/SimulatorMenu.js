@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
+// import SwitchButton from 'react-switch-button/src/react-switch-button';
 import { NumberInput } from '../../components/Input';
 import { setOperation, setCellSize, setGridSize, setRandomSeed } from '../../actions/current-grid';
 import { getCurrentGrid } from '../../selectors/current-grid';
@@ -98,6 +99,13 @@ class SimulatorMenu extends Component {
         <div className="inputs-group">
           <span className="label">COMMON</span>
           <NumberInput label="Random seed" value={randomSeed} onChange={onSetRandomSeed} isRequired isInteger min={1} max={maxRandomSeed} />
+        </div>
+        <div className="inputs-group">
+          <span className="label">INCLUSIONS</span>
+          <NumberInput label="Amount of inclusions" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
+          <NumberInput label="Amount of inclusions" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
+          {/* <SwitchButton labelRight="Circular" /> */}
+          {/* <NumberInput label="Random seed" value={randomSeed} onChange={onSetRandomSeed} isRequired isInteger min={1} max={maxRandomSeed} /> */}
         </div>
         <div className="inputs-group">
           <span className="label">RUN</span>
