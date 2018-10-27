@@ -1,0 +1,14 @@
+.Switch {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__label {
+    color: #00000050;
+    &--active {
+      color: #000;
+      font-weight: 900;
+    }
+  }
+}

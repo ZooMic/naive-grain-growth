@@ -4,6 +4,7 @@ import {
   SET_GRID_SIZE,
   SET_RANDOM_SEED,
   SAVE_DATA_GRID,
+  SAVE_INCLUSIONS,
 } from '../actions/current-grid'
 
 const defaultState = {
@@ -20,6 +21,10 @@ const defaultState = {
     rows: 25,
   },
   operationName: '',
+  inclusions: {
+    radius: 1,
+    amount: 1,
+  },
 };
 
 export default (state = defaultState, action) => {
@@ -28,6 +33,7 @@ export default (state = defaultState, action) => {
     case SET_CELL_SIZE:
     case SET_GRID_SIZE:
     case SAVE_DATA_GRID:
+    case SAVE_INCLUSIONS:
       return {...state, ...action.payload };
     case SET_RANDOM_SEED:
       return {...state, common: { ...action.payload } };

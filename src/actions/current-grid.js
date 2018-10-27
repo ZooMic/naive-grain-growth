@@ -29,3 +29,9 @@ export const saveDataGrid = (dispatch) => (dataGrid) => dispatch({
   type: SAVE_DATA_GRID,
   payload: { grid: dataGrid },
 });
+
+export const SAVE_INCLUSIONS = "@CURRENT-GRID/SAVE_INCLUSIONS";
+export const saveInclusions = (dispatch) => (inclusions) => dispatch({
+  type: SAVE_INCLUSIONS,
+  payload: { inclusions },
+});

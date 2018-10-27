@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
-// import SwitchButton from 'react-switch-button/src/react-switch-button';
-import { NumberInput } from '../../components/Input';
+import Switch from '../../components/Switch';
+import { NumberInput, Input } from '../../components/Input';
 import { setOperation, setCellSize, setGridSize, setRandomSeed } from '../../actions/current-grid';
 import { getCurrentGrid } from '../../selectors/current-grid';
 import 'muicss/dist/css/mui.css';
@@ -12,6 +12,14 @@ import debounce from '../../helpers/debounce';
 import { getGlobalCanvas } from '../../helpers/globalCanvas';
 
 class SimulatorMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      filename: 'nng-export',
+    };
+  }
+
   onRunOperationClick = (operationName) => () => {
     this.props.setOperation(operationName);
   }
@@ -40,8 +48,9 @@ class SimulatorMenu extends Component {
   }
 
   onExportToText = () => {
+    const { filename: fn } = this.state;
     const { grid } = this.props;
-    const filename = 'data-grid.json';
+    const filename = `${fn}.json`;
     const jsonString = JSON.stringify(grid);
     const element = document.createElement('a');
     const blob = new Blob([jsonString], {type: "octet/stream"});
@@ -56,20 +65,30 @@ class SimulatorMenu extends Component {
   }
 
   onExportToImage = () => {
+    const { filename } = this.state;
     const canvas = getGlobalCanvas();
     const img = canvas.toDataURL("image/png");
 
     const element = document.createElement('a');
     element.setAttribute('href', img);
-    element.setAttribute('download', "image-grid.png");
+    element.setAttribute('download', `${filename}.png`);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
   }
 
+  onFilenameChange = (eventValue) => {
+    this.setState({
+      filename: eventValue,
+    });
+  }
+
   render() {
     const {
+      state: {
+        filename,
+      },
       props: {
         cellSize,
         gridSize,
@@ -81,6 +100,7 @@ class SimulatorMenu extends Component {
       onSetRandomSeed,
       onExportToText,
       onExportToImage,
+      onFilenameChange,
     } = this;
 
     const maxRandomSeed = gridSize.rows * gridSize.columns;
@@ -88,8 +108,8 @@ class SimulatorMenu extends Component {
       <div className="simulator-menu">
         <div className="inputs-group">
           <span className="label">CELL SIZE</span>
-          <NumberInput label="Width" value={cellSize.width} onChange={onSetCellSize('width')} isRequired isInteger min={1} max={20} />
           <NumberInput label="Height" value={cellSize.height} onChange={onSetCellSize('height')} isRequired isInteger min={1} max={20} />
+          <NumberInput label="Width" value={cellSize.width} onChange={onSetCellSize('width')} isRequired isInteger min={1} max={20} />
         </div>
         <div className="inputs-group">
           <span className="label">GRID SIZE</span>
@@ -102,10 +122,9 @@ class SimulatorMenu extends Component {
         </div>
         <div className="inputs-group">
           <span className="label">INCLUSIONS</span>
-          <NumberInput label="Amount of inclusions" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
-          <NumberInput label="Amount of inclusions" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
-          {/* <SwitchButton labelRight="Circular" /> */}
-          {/* <NumberInput label="Random seed" value={randomSeed} onChange={onSetRandomSeed} isRequired isInteger min={1} max={maxRandomSeed} /> */}
+          <NumberInput label="Amount" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
+          <NumberInput label="Radius/Diagonal" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
+          <Switch checked labelLeft="Square" labelRight="Circular"/>
         </div>
         <div className="inputs-group">
           <span className="label">RUN</span>
@@ -114,6 +133,7 @@ class SimulatorMenu extends Component {
         </div>
         <div className="inputs-group">
           <span className="label">EXPORTS</span>
+          <Input label="File name" value={filename} onChange={onFilenameChange} isRequired/>
           <Button size="small" variant="raised" color="accent" onClick={onExportToText}>Text</Button>
           <Button size="small" variant="raised" color="accent" onClick={onExportToImage}>Image</Button>
         </div>
@@ -134,18 +154,19 @@ SimulatorMenu.propTypes = {
   common: PropTypes.shape({
     randomSeed: PropTypes.number.isRequired,
   }).isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
-  const { cellSize, gridSize, common, grid } = getCurrentGrid(state);
-  return { cellSize, gridSize, common, grid };
+  const { cellSize, gridSize, common, grid, inclusions } = getCurrentGrid(state);
+  return { cellSize, gridSize, common, grid, inclusions };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   setOperation: setOperation(dispatch),
-  setCellSize: debounce(setCellSize(dispatch), 150),
+  setCellSize: setCellSize(dispatch),
   setGridSize: debounce(setGridSize(dispatch), 150),
   setRandomSeed: debounce(setRandomSeed(dispatch), 150),
+  // setInclusions: setInclusions(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimulatorMenu);

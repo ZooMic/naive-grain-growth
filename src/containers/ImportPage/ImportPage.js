@@ -15,6 +15,7 @@ class ImportPage extends Component {
     super(props);
     this.imageCanvas = null;
     this.dropTarget = null;
+    this.inputTarget = null;
     
     this.state = {
       correctGrid: null,
@@ -162,9 +163,29 @@ class ImportPage extends Component {
     history.push('/simulator');
   }
 
+  onInputRef = (node) => {
+    if (node) {
+      this.inputTarget = node;
+    }
+  }
+
+  onFileInputChanged = (event) => {
+    this.onFileInputChange(event.target.files);
+  }
+
+  onDragDropClick = (event) => {
+    const { grid, error, data } = this.state;
+    const isCorrectlyImported = grid !== null && error === null && data !== null;
+    if (isCorrectlyImported) {
+      return null;
+    }
+    const { inputTarget } = this;
+    inputTarget.click();
+  }
+
   render() {
     const {
-      onImageCanvasRef, onInputChange, onFileInputChange, onCancel, onSave,
+      onImageCanvasRef, onInputChange, onFileInputChange, onCancel, onSave, onDragDropClick, onInputRef, onFileInputChanged,
       state: { cellSize, typeOfInput, error, grid, data, gridSize },
     } = this;
 
@@ -172,7 +193,7 @@ class ImportPage extends Component {
     
     return (
       <MainLayout>
-        <div className="import-page">
+        <div className="import-page" onClick={onDragDropClick} >
           { !isCorrectlyImported ? <FileDrop
             onDrop={onFileInputChange}
             className="file-drop"
@@ -181,6 +202,7 @@ class ImportPage extends Component {
           >
             <h3>Import file</h3>
           </FileDrop> : null }
+          { !isCorrectlyImported ? <input type="file" className="no-display" ref={onInputRef} onChange={onFileInputChanged} /> : null }
           <canvas className="no-display" ref={onImageCanvasRef} />
 
           { isCorrectlyImported ? <div className="after-import">
