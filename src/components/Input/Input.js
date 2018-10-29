@@ -1,11 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import InputMUI from 'muicss/lib/react/input';
+import BemHelper from 'react-bem-helper';
+import Tooltip from 'rc-tooltip';
+import Icon, { icons } from '../Icon';
 import { checkRequired } from './helpers'; 
-import 'muicss/dist/css/mui.css';
-import './style.scss';
+import 'rc-tooltip/assets/bootstrap_white.css';
+import './Input.scss';
 
-class Input extends Component {
+const bem = BemHelper('Input');
+
+class Input extends PureComponent{
   constructor(props) {
     super(props);
     this.state = {
@@ -74,10 +78,24 @@ class Input extends Component {
       onChange, onBlur,
     } = this;
 
+    const invalid = !isValid ? 'invalid' : '';
+
     return (
-      <div className={`custom-input ${!isValid ? 'invalid' : ''}`}>
-        <InputMUI label={label} floatingLabel value={currentValue} onChange={onChange} onBlur={onBlur} />
-        { !isValid ? <span className="custom-input-error">{message} Due to the error current used value is {value}.</span> : null }
+      <div {...bem('', invalid)} >
+        <div {...bem('label', invalid)}>{label}</div>
+        <div {...bem('input', invalid)}>
+          <input value={currentValue} onChange={onChange} onBlur={onBlur} />
+            { !isValid ? <Tooltip
+              placement="left"
+              trigger={['click', 'hover']}
+              overlay={
+                <div {...bem('error')} >
+                  {message}<br />Due to the error current used value is "{value}"
+                </div>}
+          >
+            <div {...bem('error-icon')}><Icon icon={icons.warning} /></div>
+          </Tooltip> : null }
+        </div>
       </div>
     );
   }

@@ -22,8 +22,11 @@ const defaultState = {
   },
   operationName: '',
   inclusions: {
+    isSquare: true,
     radius: 1,
     amount: 1,
+    color: '#000',
+    isPickingColor: false,
   },
 };
 

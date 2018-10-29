@@ -8,11 +8,11 @@ const bem = BemHelper('Switch');
 
 const Switch = ({ checked, labelLeft, labelRight, onChange }) => {
   const leftModifier = {
-    active: checked,  
+    active: !checked,  
   };
 
   const rightModifier = {
-    active: !checked,
+    active: checked,
   };
 
   return (
@@ -23,6 +23,10 @@ const Switch = ({ checked, labelLeft, labelRight, onChange }) => {
           checkedIcon={null}
           checked={checked}
           onChange={onChange}
+          offColor='#FF4081'
+          onColor='#FF4081'
+          height={20}
+          handleDiameter={30}
         />
         <span {...bem('label', rightModifier)}>{labelRight}</span>
     </div>

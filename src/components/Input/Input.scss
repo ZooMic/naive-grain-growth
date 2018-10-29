@@ -1,0 +1,51 @@
+.Input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.30);
+    min-height: 28px;
+
+    &--invalid {
+        background: rgba(255, 0, 0, 0.30);
+    }
+
+    &__label {
+        color: rgba(0, 0, 0, 0.54);
+        width: 40%;
+        padding: 3px;
+        display: flex;
+        align-items: center;
+        font-size: 10px;
+
+        &--invalid {
+            color: white;
+            font-weight: 400;
+        }
+    }
+
+    &__input {
+        width: 60%;
+        display: flex;
+        padding: 3px;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid black;
+
+        &--invalid {
+            border: 2px solid red;
+        }
+
+        & input {
+            width: 100%;
+            border: none;
+        }
+    }
+
+    &__error-icon {
+        display: flex;
+        align-items: center;
+        fill: red;
+    }
+}

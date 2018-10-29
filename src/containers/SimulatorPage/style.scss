@@ -10,11 +10,16 @@
   background-color: black;
   border: 1em solid #7f1e4d;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  // justify-content: center;
+  // align-items: center;
   margin-left: 2em;
+  overflow: auto;
 
   & canvas {
       background-color: #a587a4;
   }
+}
+
+.picking-color canvas {
+  cursor: url('../../assets/pipette.png') 0 45, auto;
 }

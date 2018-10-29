@@ -5,6 +5,9 @@ class GridCanvas extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      emptyColor: '#FFF',
+    };
     this.canvasRef = null;
     this.canvasContext = null;
     this.resizeTimeout = null;
@@ -28,8 +31,9 @@ class GridCanvas extends Component {
     const {
       canvasRef: canvas,
       canvasContext: ctx,
+      state: { emptyColor },
     } = this;
-    ctx.fillStyle="#FFF";
+    ctx.fillStyle = emptyColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -64,9 +68,22 @@ class GridCanvas extends Component {
     this.drawGrid();
   }
 
+  onClick = (event) => {
+    const canvas = this.canvasRef;
+    const { clientX, clientY } = event;
+    const { emptyColor } = this.state;
+    const { cellSize, data } = this.props;
+    const rect = canvas.getBoundingClientRect();
+    const col = Math.floor((clientX - rect.x) / cellSize.width);
+    const row = Math.floor((clientY - rect.y) / cellSize.height);
+    const { color } = data.find(({ x, y }) => x === row && y === col) || { color: emptyColor };
+    this.props.onClick({ row, col, color });
+  }
+
   render() {
     const {
       onRef,
+      onClick,
       props: { className, gridSize, cellSize },
     } = this;
 
@@ -75,11 +92,14 @@ class GridCanvas extends Component {
 
     return (
       <div className={className}>
-        <canvas
-          ref={onRef}
-          width={actualWidth}
-          height={actualHeight}
-        />
+        <div style={{margin: 'auto'}}>
+          <canvas
+            ref={onRef}
+            width={actualWidth}
+            height={actualHeight}
+            onClick={onClick}
+          />
+        </div>
       </div>
     );
   }
@@ -108,12 +128,14 @@ GridCanvas.propTypes = {
     y: PropTypes.number,
     color: PropTypes.string,
   })),
+  onClick: PropTypes.func,
 }
 
 GridCanvas.defaultProps = {
   data: [],
   cellSize: { width: 10, height: 10 },
   gridSize: { rows: 60, columns: 60 },
+  onClick: x => x,
 }
 
 export default GridCanvas;

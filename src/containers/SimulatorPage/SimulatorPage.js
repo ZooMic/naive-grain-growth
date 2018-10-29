@@ -8,7 +8,7 @@ import SimulatorMenu from '../SimulatorMenu';
 
 import procedure from '../../operations/procedure';
 import { getCurrentGrid } from '../../selectors/current-grid';
-import { setOperation, saveDataGrid } from '../../actions/current-grid';
+import { setOperation, saveDataGrid, saveInclusions } from '../../actions/current-grid';
 import { setGlobalCanvas } from '../../helpers/globalCanvas';
 
 import './style.scss';
@@ -74,11 +74,22 @@ class SimulatorPage extends Component {
     }
   }
 
+  onColorPick = ({ color }) => {
+    const { isPickingColor } = this.props.inclusions;
+    if (isPickingColor) {
+      this.props.saveInclusions({
+        ...this.props.inclusions,
+        color,
+      });
+    }
+  }
+
   render() {
     const {
-      props: { cellSize, gridSize, grid },
+      props: { cellSize, gridSize, grid, inclusions: { isPickingColor } },
       state: { data },
       onRef,
+      onColorPick,
     } = this;
 
     const currentGrid = data.length === 0 ? grid : data;
@@ -87,7 +98,7 @@ class SimulatorPage extends Component {
     return (
       <MainLayout>
         <div className="simulator-page">
-          <GridCanvas className="simulator-canvas" cellSize={cellSize} gridSize={gridSize} data={finalData} onRef={onRef}/>
+          <GridCanvas className={`simulator-canvas ${isPickingColor ? 'picking-color' : ''}`} cellSize={cellSize} gridSize={gridSize} data={finalData} onRef={onRef} onClick={onColorPick} />
           <SimulatorMenu />
         </div>
       </MainLayout>
@@ -117,6 +128,10 @@ SimulatorPage.propTypes = {
     randomSeed: PropTypes.number.isRequired,
   }).isRequired,
   operationName: PropTypes.string,
+  inclusions: PropTypes.shape({
+    color: PropTypes.string.isRequired,
+    isPickingColor: PropTypes.bool.isRequired,
+  }).isRequired,
 }
 
 SimulatorPage.defaultProps = {
@@ -131,6 +146,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, prop) => ({
   setOperation: setOperation(dispatch),
   saveDataGrid: saveDataGrid(dispatch),
+  saveInclusions: saveInclusions(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimulatorPage);

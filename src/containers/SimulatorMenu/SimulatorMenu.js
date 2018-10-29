@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { SketchPicker } from 'react-color'
 import Button from 'muicss/lib/react/button';
 import Switch from '../../components/Switch';
+import Icon, { icons } from '../../components/Icon';
 import { NumberInput, Input } from '../../components/Input';
-import { setOperation, setCellSize, setGridSize, setRandomSeed } from '../../actions/current-grid';
+import { setOperation, setCellSize, setGridSize, setRandomSeed, saveInclusions } from '../../actions/current-grid';
 import { getCurrentGrid } from '../../selectors/current-grid';
 import 'muicss/dist/css/mui.css';
 import './style.scss';
-import debounce from '../../helpers/debounce';
 import { getGlobalCanvas } from '../../helpers/globalCanvas';
+import startInclusions from '../../operations/inclusions';
 
 class SimulatorMenu extends Component {
   constructor(props) {
@@ -84,6 +86,52 @@ class SimulatorMenu extends Component {
     });
   }
 
+  onInclusionsSwitchChanged = () => {
+    const { inclusions, saveInclusions } = this.props;
+    saveInclusions({
+      ...inclusions,
+      isSquare: !inclusions.isSquare,
+    });
+  }
+
+  onInclusionsInput = (parameterName) => (eventValue) => {
+    const { inclusions, saveInclusions } = this.props;
+    saveInclusions({
+      ...inclusions,
+      [parameterName]: parseInt(eventValue),
+    });
+  }
+
+  onInclusionsApply = () => {
+    const { inclusions, grid, cellSize, gridSize } = this.props;
+    startInclusions(grid, { inclusions, cellSize, gridSize });
+  }
+
+  onColorPickerOpen = () => {
+    const { inclusions, saveInclusions } = this.props;
+    saveInclusions({
+      ...inclusions,
+      isPickingColor: true,
+    });
+  }
+
+  onColorPickerClose = () => {
+    const { inclusions, saveInclusions } = this.props;
+    saveInclusions({
+      ...inclusions,
+      isPickingColor: false,
+    });
+  }
+
+  onColorChange = (event) => {
+    const { hex } = event;
+    const { inclusions, saveInclusions } = this.props;
+    saveInclusions({
+      ...inclusions,
+      color: hex,
+    });
+  }
+
   render() {
     const {
       state: {
@@ -92,7 +140,8 @@ class SimulatorMenu extends Component {
       props: {
         cellSize,
         gridSize,
-        common: { randomSeed }
+        common: { randomSeed },
+        inclusions: { isSquare, amount, radius, color, isPickingColor },
       },
       onRunOperationClick,
       onSetCellSize,
@@ -101,11 +150,36 @@ class SimulatorMenu extends Component {
       onExportToText,
       onExportToImage,
       onFilenameChange,
+      onInclusionsSwitchChanged,
+      onInclusionsInput,
+      onInclusionsApply,
+      onColorPickerOpen,
+      onColorPickerClose,
+      onColorChange,
     } = this;
 
     const maxRandomSeed = gridSize.rows * gridSize.columns;
     return (
       <div className="simulator-menu">
+        { isPickingColor ?
+          <div className="overflow">
+            <SketchPicker color={color} onChange={onColorChange} />
+            <button className="close-sketch-picker" onClick={onColorPickerClose}><Icon icon={icons.checkmark} size="large" /></button>
+          </div> : null }
+        <div className="inputs-group">
+          <span className="label">INCLUSIONS</span>
+          <NumberInput label="Amount" value={amount} onChange={onInclusionsInput('amount')} isRequired isInteger min={1} max={maxRandomSeed} />
+          <NumberInput label={!isSquare ? 'Radius' : 'Diagonal'} value={radius} onChange={onInclusionsInput('radius')} isRequired isInteger min={1} max={maxRandomSeed} />
+          <Switch checked={!isSquare} labelLeft="Square" labelRight="Circular" onChange={onInclusionsSwitchChanged} />
+          <div className="color-picker" style={{background: color}} onClick={onColorPickerOpen} />
+          <Button size="small" variant="raised" color="accent" onClick={onInclusionsApply}>Apply</Button>
+        </div>
+        <div className="inputs-group">
+          <span className="label">EXPORTS</span>
+          <Input label="File name" value={filename} onChange={onFilenameChange} isRequired/>
+          <Button size="small" variant="raised" color="accent" onClick={onExportToText}>Text</Button>
+          <Button size="small" variant="raised" color="accent" onClick={onExportToImage}>Image</Button>
+        </div>
         <div className="inputs-group">
           <span className="label">CELL SIZE</span>
           <NumberInput label="Height" value={cellSize.height} onChange={onSetCellSize('height')} isRequired isInteger min={1} max={20} />
@@ -121,21 +195,9 @@ class SimulatorMenu extends Component {
           <NumberInput label="Random seed" value={randomSeed} onChange={onSetRandomSeed} isRequired isInteger min={1} max={maxRandomSeed} />
         </div>
         <div className="inputs-group">
-          <span className="label">INCLUSIONS</span>
-          <NumberInput label="Amount" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
-          <NumberInput label="Radius/Diagonal" value={1} onChange={x => x} isRequired isInteger min={1} max={maxRandomSeed} />
-          <Switch checked labelLeft="Square" labelRight="Circular"/>
-        </div>
-        <div className="inputs-group">
           <span className="label">RUN</span>
           <Button size="small" variant="raised" color="accent" onClick={onRunOperationClick('neumann')}>Neumann</Button>
           <Button size="small" variant="raised" color="accent" onClick={onRunOperationClick('moore')}>Moore</Button>
-        </div>
-        <div className="inputs-group">
-          <span className="label">EXPORTS</span>
-          <Input label="File name" value={filename} onChange={onFilenameChange} isRequired/>
-          <Button size="small" variant="raised" color="accent" onClick={onExportToText}>Text</Button>
-          <Button size="small" variant="raised" color="accent" onClick={onExportToImage}>Image</Button>
         </div>
       </div>
     );
@@ -154,6 +216,18 @@ SimulatorMenu.propTypes = {
   common: PropTypes.shape({
     randomSeed: PropTypes.number.isRequired,
   }).isRequired,
+  inclusions: PropTypes.shape({
+    amount: PropTypes.number.isRequired,
+    radius: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
+    isPickingColor: PropTypes.bool.isRequired,
+    isSquare: PropTypes.bool,
+  }).isRequired,
+  grid: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.string,
+    ),
+  ),
 };
 
 const mapStateToProps = (state) => {
@@ -164,9 +238,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   setOperation: setOperation(dispatch),
   setCellSize: setCellSize(dispatch),
-  setGridSize: debounce(setGridSize(dispatch), 150),
-  setRandomSeed: debounce(setRandomSeed(dispatch), 150),
-  // setInclusions: setInclusions(dispatch),
+  setGridSize: setGridSize(dispatch),
+  setRandomSeed: setRandomSeed(dispatch),
+  saveInclusions: saveInclusions(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimulatorMenu);

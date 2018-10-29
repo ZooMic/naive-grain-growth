@@ -8,10 +8,46 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  align-items: center;
+
+  & .overflow {
+    position: absolute;
+    z-index: 99;
+
+    & .close-sketch-picker {
+      position: relative;
+      top: -26px;
+      left: calc(100% - 28px);
+      border: none;
+      background: none;
+      fill: white;
+      padding: 0px;
+      background: #FF4081;
+      border-radius: 35px;
+      border: 3px solid #FF4081;
+      display: flex;
+
+      &:hover {
+        fill: lightgreen;
+      }
+    }
+  }
+
+  & .color-picker {
+    width: 60px;
+    height: 25px;
+    margin: auto;
+    border: 5px solid #FF4081;
+    
+    &:hover {
+      border: 5px solid rgba(255, 64, 128, 0.75);
+      cursor: pointer;
+    }
+  }
 }
 
 .inputs-group {
-  padding-top: 1em;
+  padding: 0.3em 0;
   margin: 5px;
   text-align: center;
   background-color: #ffffff26;
@@ -21,6 +57,5 @@
     display: block;
     font-weight: 900;
     color: whitesmoke;
-    margin-bottom: 1em;
   }
 }
