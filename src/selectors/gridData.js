@@ -1,0 +1,1 @@
+export const getGridData = (state) => state.gridData;

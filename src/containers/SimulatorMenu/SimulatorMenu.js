@@ -104,7 +104,7 @@ class SimulatorMenu extends Component {
 
   onInclusionsApply = () => {
     const { inclusions, grid, cellSize, gridSize } = this.props;
-    startInclusions(grid, { inclusions, cellSize, gridSize });
+     startInclusions(grid, { inclusions, cellSize, gridSize });
   }
 
   onColorPickerOpen = () => {
