@@ -1,6 +1,7 @@
 .ColorPicker {
     position: absolute;
     z-index: 99;
+    display: none;
 
     &__close-btn {
         position: relative;
@@ -21,6 +22,6 @@
     }
 
     &--isVisible {
-        display: none;
+        display: block;
     }
 }

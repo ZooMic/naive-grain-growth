@@ -1,7 +1,12 @@
-import { actionCreator } from '../helpers';
+// import { actionCreator } from '../helpers';
 
 export const CHANGE_COLORS_MAP = '@gridData/CHANGE_COLORS_MAP';
-export const changeColorsMap = actionCreator(CHANGE_COLORS_MAP);
+export const changeColorsMap = (dispatch) => (colorsMap) => {
+  dispatch({
+    type: CHANGE_COLORS_MAP,
+    payload: colorsMap,
+  });
+};
 
 export const CHANGE_GRID = '@gridData/CHANGE_GRID';
 export const changeGrid = (dispatch) => (grid) => {
@@ -11,10 +16,42 @@ export const changeGrid = (dispatch) => (grid) => {
   });
 };
 
-export const CHANGE_GRID_SIZE = '@gridData/CHANGE_SIZE';
-export const changeGridSize = (dispatch) => (size) => {
+export const CHANGE_GRID_SIZE = '@gridData/CHANGE_GRID_SIZE';
+export const changeGridSize = (dispatch) => (gridSize) => {
   dispatch({
     type: CHANGE_GRID_SIZE,
-    payload: size,
+    payload: gridSize,
   });
 };
+
+export const CHANGE_CELL_SIZE = '@gridData/CHANGE_CELL_SIZE';
+export const changeCellSize = (dispatch) => (cellSize) => {
+  dispatch({
+    type: CHANGE_CELL_SIZE,
+    payload: cellSize,
+  });
+};
+
+export const CHANGE_RANDOM_SEED = '@gridData/CHANGE_RANDOM_SEED';
+export const changeRandomSeed = (dispatch) => (randomSeed) => {
+  dispatch({
+    type: CHANGE_RANDOM_SEED,
+    payload: randomSeed,
+  });
+};
+
+export const CHANGE_INITIALIZED = '@gridData/CHANGE_INITIALIZED';
+export const changeInitialized = (dispatch) => (isInitialized) => {
+  dispatch({
+    type: CHANGE_INITIALIZED,
+    payload: isInitialized,
+  });
+}
+
+export const CHANGE_PROBABILITY = '@gridData/CHANGE_PROBABILITY';
+export const changeProbability = (dispatch) => (probability) => {
+  dispatch({
+    type: CHANGE_PROBABILITY,
+    payload: probability,
+  });
+}

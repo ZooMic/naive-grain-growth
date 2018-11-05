@@ -4,10 +4,10 @@ export default (oldData, gridSize, onFinish) => {
     return nextStep(mooreNeighbour, oldData, gridSize, onFinish);
 }
 
-const mooreNeighbour = (cell, gridSize, data) => {
+const mooreNeighbour = (cell, data) => {
     const { x, y } = cell;
 
-    if (data[y][x]) {
+    if (data[y][x] >= 0) {
         return data[y][x];
     } else {
         const l = data[y] && data[y][x - 1];
@@ -30,17 +30,18 @@ const mooreNeighbour = (cell, gridSize, data) => {
         counter[ld] = counter[ld] ? counter[ld] + 1 : 1;
         counter[rd] = counter[rd] ? counter[rd] + 1 : 1;
 
-        let color;
+        let id;
         let max = 0;
         for (let key in counter) {
-            if (key !== "undefined") {
-                if (counter[key] > max) {
-                    color = key;
-                    max = counter[key];
+            const k = Number(key);
+            if (k > 0) {
+                if (counter[k] > max) {
+                    id = k;
+                    max = counter[k];
                 }
             }
         }
         
-        return color;
+        return id;
     }    
 }

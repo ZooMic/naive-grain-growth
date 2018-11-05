@@ -1,18 +1,48 @@
 import { initialize } from './common';
 import methodFactory from './methods';
 
+import { getGridData } from '../selectors/gridData';
+import { getInclusionsData } from '../selectors/inclusions';
+import { changeColorsMap, changeGrid, changeInitialized } from '../actions/gridData';
+import { changeInclusionsParameters } from '../actions/inclusions';
+import store from '../reducers/index';
+
+const DEBOUNCE_TIME = 500;
 let lastTime = 0;
 let timeout = null;
 
-export default ({ randomSeed, refreshTime, gridSize, neighborhood, onFinish, onRefresh }) => {
+const onUpdate = (grid, colorsMap, isFinished) => {
+  const { dispatch } = store;
+  if (colorsMap) {
+    changeColorsMap(dispatch)(colorsMap);
+  }
+
+  changeGrid(dispatch)(grid);
+
+  if (isFinished) {
+    changeInitialized(dispatch)(true);
+  }
+}
+
+const procedures = (neighborhood) => {
+  const { isInitialized } = getInclusionsData(store.getState());
+  const { randomSeed, gridSize, grid, initialized, colorsMap: cM } = getGridData(store.getState());
+
+
+  console.log("WTF", initialized);
+  if (!isInitialized || initialized) {
+    clearGrid();
+  }
+
   if (timeout) {
     clearTimeout(timeout);
     timeout = null;
   }
   lastTime = (new Date()).getTime();
-  let data = initialize(randomSeed, gridSize);
 
-  onRefresh(data);
+  let { data, colorsMap } = initialize(randomSeed, gridSize, grid, initialized, cM);
+
+  onUpdate(data, colorsMap, false);
   
   const method = methodFactory(neighborhood);
 
@@ -21,14 +51,14 @@ export default ({ randomSeed, refreshTime, gridSize, neighborhood, onFinish, onR
     shouldFinish = true;
     clearTimeout(timeout);
     timeout = null;
-    onFinish(lastData);
+    onUpdate(lastData, null, true);
   }
 
   const procedure = () => {
     data = method(data, gridSize, finished);
     const newTime = (new Date()).getTime();
-    if (newTime - lastTime >= refreshTime) {
-      onRefresh(data);
+    if (newTime - lastTime >= DEBOUNCE_TIME) {
+      onUpdate(data, null, false);
       lastTime = (new Date()).getTime();
     }
     
@@ -39,3 +69,24 @@ export default ({ randomSeed, refreshTime, gridSize, neighborhood, onFinish, onR
 
   timeout = setTimeout(procedure, 1);
 }
+
+export const clearGrid = () => {
+  const { dispatch } = store;
+  changeGrid(dispatch)([]);
+  changeInitialized(dispatch)(false);
+  changeInclusionsParameters(dispatch)({ isInitialized: false });
+}
+
+export const mooreProcedure = () => {
+  procedures('moore');
+}
+
+export const neumannProcedure = () => {
+  procedures('neumann');
+}
+
+export const moore2Procedure = () => {
+  procedures('moore2');
+}
+
+

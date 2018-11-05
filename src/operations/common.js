@@ -1,54 +1,57 @@
 import randomColor from 'random-color';
+import createGrid from '../helpers/createGrid';
 
-export const initialize = (randomSeed, gridSize) => {
-  const { rows: r, columns: c } = gridSize;
-  
-  const data = [];
-  for (let i = 0; i < gridSize.rows; i++) {
-    data.push(new Array(gridSize.columns))
+export const initialize = (randomSeed, { row, col }, grid, isInitialized, colMap) => {
+  let data;
+  if (grid.length === 0) {
+    data = createGrid(row, col);
+  } else {
+    data = grid;
   }
+  
+  const colorsMap = colMap;
 
   for (let i = 0; i < randomSeed; i++) {
-    const row = Math.floor(Math.random() * r);
-    const col = Math.floor(Math.random() * c);
-    const color = randomColor().hexString();
+    const r = Math.floor(Math.random() * row);
+    const c = Math.floor(Math.random() * col);
+    const id = i + 1;
 
-    if(!data[row][col]) {
-      data[row][col] = color;
+    if(data[r][c] < 0) {
+      data[r][c] = id;
+      colorsMap[id] = randomColor().hexString();
     } else {
       i -= 1;
     }
   }
 
-  return data;
+  return { data, colorsMap };
 }
 
-export const nextStep = (neighbourDeterminator, data, gridSize, onFinish) => {
-  
-  let newData = new Array(gridSize.rows);
-  for ( let i = 0; i < gridSize.rows; i++) {
+export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish) => {
+  let newData = new Array(row);
+  for ( let i = 0; i < row; i++) {
     newData[i] = [];
-    for (let j = 0; j < gridSize.columns; j++) {
+    for (let j = 0; j < col; j++) {
       newData[i].push(data[i][j]);
-    }  
+    }
   }
   
-  for(let i = 0; i < gridSize.rows; i++) {
-    for (let j = 0; j < gridSize.columns; j++) {
-      newData[i][j] = neighbourDeterminator({x: j, y: i}, gridSize, data);
+  for(let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      newData[i][j] = neighbourDeterminator({x: j, y: i}, data);
     }
   }
 
   let counter = 0;
-  for(let i = 0; i < gridSize.rows; i++) {
-    for (let j = 0; j < gridSize.columns; j++) {
-      if(!!newData[i][j]) {
+  for(let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      if(newData[i][j] >= 0) {
         counter += 1;
       }
     }
   }
 
-  if (gridSize.rows * gridSize.columns <= counter) {
+  if (row * col <= counter) {
     onFinish(newData);
   }
 

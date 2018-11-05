@@ -8,7 +8,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  align-items: center;
+  align-items: start;
 
   & .overflow {
     position: absolute;
@@ -30,18 +30,6 @@
       &:hover {
         fill: lightgreen;
       }
-    }
-  }
-
-  & .color-picker {
-    width: 60px;
-    height: 25px;
-    margin: auto;
-    border: 5px solid #FF4081;
-    
-    &:hover {
-      border: 5px solid rgba(255, 64, 128, 0.75);
-      cursor: pointer;
     }
   }
 }

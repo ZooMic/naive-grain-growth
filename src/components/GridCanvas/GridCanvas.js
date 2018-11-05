@@ -87,8 +87,8 @@ class GridCanvas extends Component {
       props: { className, gridSize, cellSize },
     } = this;
 
-    const actualWidth = gridSize.columns * cellSize.width;
-    const actualHeight = gridSize.rows * cellSize.height;
+    const actualWidth = gridSize.col * cellSize.width;
+    const actualHeight = gridSize.row * cellSize.height;
 
     return (
       <div className={className}>
@@ -120,8 +120,8 @@ GridCanvas.propTypes = {
     height: PropTypes.number,
   }),
   gridSize: PropTypes.shape({
-    rows: PropTypes.number,
-    columns: PropTypes.number,
+    row: PropTypes.number,
+    col: PropTypes.number,
   }),
   data: PropTypes.arrayOf(PropTypes.shape({
     x: PropTypes.number,
@@ -134,7 +134,7 @@ GridCanvas.propTypes = {
 GridCanvas.defaultProps = {
   data: [],
   cellSize: { width: 10, height: 10 },
-  gridSize: { rows: 60, columns: 60 },
+  gridSize: { row: 60, col: 60 },
   onClick: x => x,
 }
 

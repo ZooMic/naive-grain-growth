@@ -4,10 +4,10 @@ export default (oldData, gridSize, onFinish) => {
     return nextStep(neumanNeighbour, oldData, gridSize, onFinish);
 }
 
-const neumanNeighbour = (cell, gridSize, data) => {
+const neumanNeighbour = (cell, data) => {
     const { x, y } = cell;
 
-    if (data[y][x]) {
+    if (data[y][x] >= 0) {
         return data[y][x];
     } else {
         const l = data[y] && data[y][x - 1];
@@ -21,16 +21,17 @@ const neumanNeighbour = (cell, gridSize, data) => {
         counter[u] = counter[u] ? counter[u] + 1 : 1;
         counter[d] = counter[d] ? counter[d] + 1 : 1;
 
-        let color;
+        let id;
         let max = 0;
         for (let key in counter) {
-            if (key !== "undefined") {
-                if (counter[key] > max) {
-                    color = key;
-                    max = counter[key];
+            const k = Number(key);
+            if (k > 0) {
+                if (counter[k] > max) {
+                    id = k;
+                    max = counter[k];
                 }
             }
         }
-        return color;
+        return id;
     }
 }

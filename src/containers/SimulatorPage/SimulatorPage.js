@@ -6,68 +6,14 @@ import MainLayout from '../MainLayout';
 import GridCanvas from '../../components/GridCanvas';
 import SimulatorMenu from '../SimulatorMenu';
 
-import procedure from '../../operations/procedure';
-import { getCurrentGrid } from '../../selectors/current-grid';
-import { setOperation, saveDataGrid, saveInclusions } from '../../actions/current-grid';
+import { getGridData } from '../../selectors/gridData';
+import { gridToColorArray } from '../../helpers/gridToData';
 import { setGlobalCanvas } from '../../helpers/globalCanvas';
-
 import './style.scss';
-import gridToData from '../../helpers/gridToData';
+import { getInclusionsData } from '../../selectors/inclusions';
+import { changeInclusionsParameters } from '../../actions/inclusions';
 
 class SimulatorPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      duringProcedure: false,
-      data: [],
-    };
-  }
-
-  componentDidMount() {
-    this.shouldStartProcedure();
-  }
-
-  shouldStartProcedure = () => {
-    const {
-      state: { duringProcedure },
-      props: {
-        gridSize,
-        common: { randomSeed },
-        operationName,
-      },
-      onFinish, onRefresh,
-    } = this;
-
-    if (!duringProcedure && operationName !== '') {
-      procedure({
-        randomSeed,
-        neighborhood: operationName,
-        refreshTime: 10000,
-        gridSize,
-        onFinish,
-        onRefresh,
-      });
-      this.setState({
-        duringProcedure: true,
-      });
-    }
-  }
-
-  onFinish = (data) => {
-    this.props.setOperation('');
-    this.props.saveDataGrid(data);
-    this.setState({
-      data,
-      duringProcedure: false,
-    });
-  }
-
-  onRefresh = (data) => {
-    this.setState({
-      data,
-    });
-  }
-
   onRef = (node) => {
     if (node) {
       setGlobalCanvas(node);
@@ -75,10 +21,9 @@ class SimulatorPage extends Component {
   }
 
   onColorPick = ({ color }) => {
-    const { isPickingColor } = this.props.inclusions;
+    const { isPickingColor } = this.props;
     if (isPickingColor) {
-      this.props.saveInclusions({
-        ...this.props.inclusions,
+      this.props.changeInclusionsParameters({
         color,
       });
     }
@@ -86,14 +31,12 @@ class SimulatorPage extends Component {
 
   render() {
     const {
-      props: { cellSize, gridSize, grid, inclusions: { isPickingColor } },
-      state: { data },
+      props: { cellSize, gridSize, grid, colorsMap, isPickingColor },
       onRef,
       onColorPick,
     } = this;
 
-    const currentGrid = data.length === 0 ? grid : data;
-    const finalData = gridToData(currentGrid);
+    const finalData = gridToColorArray(grid, colorsMap);
 
     return (
       <MainLayout>
@@ -104,49 +47,34 @@ class SimulatorPage extends Component {
       </MainLayout>
     );
   }
-
-  componentDidUpdate() {
-    this.shouldStartProcedure();
-  }
 }
 
 SimulatorPage.propTypes = {
-  dataGrid: PropTypes.arrayOf(
+  grid: PropTypes.arrayOf(
     PropTypes.arrayOf(
-      PropTypes.string,
+      PropTypes.number,
     ),
-  ),
+  ).isRequired,
   cellSize: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
   }).isRequired,
   gridSize: PropTypes.shape({
-    rows: PropTypes.number.isRequired,
-    columns: PropTypes.number.isRequired,
+    row: PropTypes.number.isRequired,
+    col: PropTypes.number.isRequired,
   }).isRequired,
-  common: PropTypes.shape({
-    randomSeed: PropTypes.number.isRequired,
-  }).isRequired,
-  operationName: PropTypes.string,
-  inclusions: PropTypes.shape({
-    color: PropTypes.string.isRequired,
-    isPickingColor: PropTypes.bool.isRequired,
-  }).isRequired,
-}
-
-SimulatorPage.defaultProps = {
-  dataGrid: [],
-  operationName: '',
+  colorsMap: PropTypes.objectOf(PropTypes.string).isRequired,
+  isPickingColor: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = (state) => {
-   return getCurrentGrid(state);
+  const { grid, cellSize, gridSize, colorsMap } = getGridData(state);
+  const { isPickingColor } = getInclusionsData(state);
+  return { grid, cellSize, gridSize, colorsMap, isPickingColor };
 };
 
 const mapDispatchToProps = (dispatch, prop) => ({
-  setOperation: setOperation(dispatch),
-  saveDataGrid: saveDataGrid(dispatch),
-  saveInclusions: saveInclusions(dispatch),
+  changeInclusionsParameters: changeInclusionsParameters(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimulatorPage);

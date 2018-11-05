@@ -4,8 +4,10 @@ const defaultState = {
   isSquare: true,
   radius: 1,
   amount: 1,
-  colorID: '#000',
+  color: '#000',
+  colorID: 0,
   isPickingColor: false,
+  isInitialized: false,
 };
   
 export default (state = defaultState, action) => {
