@@ -1,7 +1,14 @@
+const LOOP_LIMIT = 100000;
+
 export default ({ row, col }, amount, radius, id, grid) => {
     const points = [];
     const diameter = 2 * radius;
+    let limit = 0;
     for (let i = 0; i < amount; i++) {
+        limit++;
+        if (limit >= LOOP_LIMIT) {
+            break;
+        }
         const r = Math.floor(Math.random() * row);
         const c = Math.floor(Math.random() * col);
 

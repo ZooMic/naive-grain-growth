@@ -27,7 +27,7 @@ export const initialize = (randomSeed, { row, col }, grid, isInitialized, colMap
   return { data, colorsMap };
 }
 
-export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish) => {
+export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish, options) => {
   let newData = new Array(row);
   for ( let i = 0; i < row; i++) {
     newData[i] = [];
@@ -38,7 +38,7 @@ export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish) =>
   
   for(let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
-      newData[i][j] = neighbourDeterminator({x: j, y: i}, data);
+      newData[i][j] = neighbourDeterminator({x: j, y: i}, data, options);
     }
   }
 

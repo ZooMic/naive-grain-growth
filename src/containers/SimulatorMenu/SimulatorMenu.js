@@ -9,6 +9,7 @@ import { getGlobalCanvas } from '../../helpers/globalCanvas';
 import { neumannProcedure, mooreProcedure, clearGrid, moore2Procedure } from '../../operations/procedure';
 import Inclusions from './Inclusions';
 import GridData from './GridData';
+import { getGridData } from '../../selectors/gridData';
 
 class SimulatorMenu extends Component {
   constructor(props) {
@@ -61,6 +62,9 @@ class SimulatorMenu extends Component {
       state: {
         filename,
       },
+      props: {
+        initialized,
+      },
       onExportToText,
       onExportToImage,
       onFilenameChange,
@@ -85,9 +89,9 @@ class SimulatorMenu extends Component {
         <div className="inputs-group">
           <span className="label">RUN</span>
           <Button size="small" variant="raised" color="accent" onClick={clearGrid}>Clear</Button>
-          <Button size="small" variant="raised" color="accent" onClick={neumannProcedure}>Neumann</Button>
-          <Button size="small" variant="raised" color="accent" onClick={mooreProcedure}>Moore</Button>
-          <Button size="small" variant="raised" color="accent" onClick={moore2Procedure}>Moore2</Button>
+          <Button size="small" variant="raised" color="accent" onClick={neumannProcedure} disabled={initialized}>Neumann</Button>
+          <Button size="small" variant="raised" color="accent" onClick={mooreProcedure} disabled={initialized}>Moore</Button>
+          <Button size="small" variant="raised" color="accent" onClick={moore2Procedure} disabled={initialized}>Moore2</Button>
         </div>
       </div>
     );
@@ -102,7 +106,10 @@ SimulatorMenu.propTypes = {
   ),
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => {
+  const { initialized } = getGridData(state);
+  return { initialized };
+};
 
 const mapDispatchToProps = (dispatch) => ({});
 

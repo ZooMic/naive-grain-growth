@@ -21,7 +21,7 @@ const defaultState = {
   },
   randomSeed: 30,
   initialized: false,
-  moore2Probability: 30,
+  moore2Probability: 19,
 };
   
 export default (state = defaultState, action) => {

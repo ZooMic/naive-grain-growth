@@ -24,12 +24,11 @@ const onUpdate = (grid, colorsMap, isFinished) => {
   }
 }
 
-const procedures = (neighborhood) => {
+const procedures = (neighborhood, options) => {
   const { isInitialized } = getInclusionsData(store.getState());
   const { randomSeed, gridSize, grid, initialized, colorsMap: cM } = getGridData(store.getState());
 
 
-  console.log("WTF", initialized);
   if (!isInitialized || initialized) {
     clearGrid();
   }
@@ -55,7 +54,7 @@ const procedures = (neighborhood) => {
   }
 
   const procedure = () => {
-    data = method(data, gridSize, finished);
+    data = method(data, gridSize, finished, options);
     const newTime = (new Date()).getTime();
     if (newTime - lastTime >= DEBOUNCE_TIME) {
       onUpdate(data, null, false);
@@ -86,7 +85,8 @@ export const neumannProcedure = () => {
 }
 
 export const moore2Procedure = () => {
-  procedures('moore2');
+  const { moore2Probability } = getGridData(store.getState());
+  procedures('moore2', { moore2Probability });
 }
 
 

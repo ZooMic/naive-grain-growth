@@ -1,10 +1,10 @@
 import { nextStep } from './common';
 
-export default (oldData, gridSize, onFinish) => {
-    return nextStep(mooreNeighbour, oldData, gridSize, onFinish);
+export default (oldData, gridSize, onFinish, options) => {
+    return nextStep(mooreNeighbour, oldData, gridSize, onFinish, options);
 }
 
-const mooreNeighbour = (cell, data) => {
+const mooreNeighbour = (cell, data, { moore2Probability }) => {
     const { x, y } = cell;
 
     if (data[y][x] >= 0) {
@@ -110,7 +110,7 @@ const mooreNeighbour = (cell, data) => {
             }
         }
 
-        const prop = 0.99;
+        const prop = moore2Probability / 100;
         if (Math.random() <= prop) {
             return id;
         }
