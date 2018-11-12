@@ -46,7 +46,7 @@
     display: inline-flex;
     width: 280px;
     background-color: #ffffff40;
-    padding: 2em 1em 0 1em;
+    padding: 1em;
     margin-bottom: 1em;
 
     & .label {
@@ -70,50 +70,55 @@
     color: white;
     font-size: 18px;
     padding: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   & .input-and-buttons-wrapper {
     display: inline-flex;
-
-    & .buttons-group {
-      display: flex;
-      flex-direction: column;
-      width: 45px;
-      margin-left: 1em;
-
-      & .cancel {
-        height: 45px;
-        background-color: #8b0000;
-        background-image: url('../../assets/cancel.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        border: none;
-
-        &:hover {
-          background-color: #c93b3b;
-        }
-      }
-
-      & .save {
-        height: 60px;
-        background-color: #105010;
-        background-image: url('../../assets/save.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        border: none;
-
-        &:hover {
-          background-color: #1f871f;
-        }
-      }
-    }
   }
 
   & .error {
     color: red;
     background-color: #5700006e;
     padding: 2em;
+  }
+}
+
+.ImportPage__buttons-group {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1em;
+  
+
+  & .cancel {
+    width: 40px;
+    height: 45px;
+    background-color: #8b0000;
+    background-image: url('../../assets/cancel.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+
+    &:hover {
+      background-color: #c93b3b;
+    }
+  }
+
+  & .save {
+    width: 40px;
+    height: 45px;
+    background-color: #105010;
+    background-image: url('../../assets/save.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+
+    &:hover {
+      background-color: #1f871f;
+    }
   }
 }

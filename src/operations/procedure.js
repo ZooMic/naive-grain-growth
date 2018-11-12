@@ -3,8 +3,10 @@ import methodFactory from './methods';
 
 import { getGridData } from '../selectors/gridData';
 import { getInclusionsData } from '../selectors/inclusions';
-import { changeColorsMap, changeGrid, changeInitialized } from '../actions/gridData';
+import { getGrainsSelection } from '../selectors/grainsSelection';
+import { changeColorsMap, changeGrid, changeInitialized, setGridData } from '../actions/gridData';
 import { changeInclusionsParameters } from '../actions/inclusions';
+import { changeGrainsSelectionParameters } from '../actions/grainsSelection';
 import store from '../reducers/index';
 
 const DEBOUNCE_TIME = 500;
@@ -25,13 +27,9 @@ const onUpdate = (grid, colorsMap, isFinished) => {
 }
 
 const procedures = (neighborhood, options) => {
-  const { isInitialized } = getInclusionsData(store.getState());
+  const { selectedGrains } = getGrainsSelection(store.getState());
   const { randomSeed, gridSize, grid, initialized, colorsMap: cM } = getGridData(store.getState());
-
-
-  if (!isInitialized || initialized) {
-    clearGrid();
-  }
+  const grains = selectedGrains.map(item => Number(item));
 
   if (timeout) {
     clearTimeout(timeout);
@@ -54,7 +52,7 @@ const procedures = (neighborhood, options) => {
   }
 
   const procedure = () => {
-    data = method(data, gridSize, finished, options);
+    data = method(data, gridSize, finished, options, grains);
     const newTime = (new Date()).getTime();
     if (newTime - lastTime >= DEBOUNCE_TIME) {
       onUpdate(data, null, false);
@@ -74,6 +72,10 @@ export const clearGrid = () => {
   changeGrid(dispatch)([]);
   changeInitialized(dispatch)(false);
   changeInclusionsParameters(dispatch)({ isInitialized: false });
+  setGridData(dispatch)({ colorsMap: {} });
+  changeGrainsSelectionParameters(dispatch)({
+    selectedGrains: [],
+  });
 }
 
 export const mooreProcedure = () => {

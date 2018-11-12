@@ -16,14 +16,31 @@ export default (grid) => {
   return data;
 }
 
-export const gridToColorArray = (grid, colorsMap) => {
+export const gridToColorArray = (grid, colorsMap, cellSize) => {
   const data = [];
-  grid.forEach((array, x) => {
-    array.forEach((id, y) => {
-      if (id >= 0) {
-        data.push({x, y, color: colorsMap[id]});
+  
+  let shiftRow = 1;
+  let shiftCol = 1;
+
+  if (cellSize) {
+    shiftRow = cellSize.height;
+    shiftCol = cellSize.width;
+  }
+
+  const row = grid.length;
+  const col = grid[0] && grid[0].length;
+  let r = 0;
+  for (let i = 0; i < row; i+=shiftRow) {
+    for (let j = 0; j < col; j+=shiftCol) {
+      if (grid[i][j] >= 0) {
+        data.push({
+          x: i / shiftRow,
+          y: j / shiftCol,
+          color: colorsMap[grid[i][j]],
+        });
       }
-    });
-  });
+    }
+  }
+
   return data;
 }

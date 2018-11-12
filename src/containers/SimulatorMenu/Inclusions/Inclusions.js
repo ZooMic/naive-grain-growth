@@ -9,6 +9,7 @@ import ColorPicker from '../../../components/ColorPicker';
 import Switch from '../../../components/Switch';
 import { NumberInput } from '../../../components/Input';
 
+import { changeColorsMap } from '../../../actions/gridData';
 import { changeInclusionsParameters } from '../../../actions/inclusions';
 import { getInclusionsData } from '../../../selectors/inclusions';
 
@@ -29,6 +30,7 @@ class Inclusions extends PureComponent {
     this.props.changeInclusionsParameters({
       color: hex,
     });
+    this.props.changeColorsMap({ 0: hex });
   }
 
   onInputChange = (propName) => (eventValue) => {
@@ -112,6 +114,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   changeInclusionsParameters: changeInclusionsParameters(dispatch),
+  changeColorsMap: changeColorsMap(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inclusions);

@@ -1,0 +1,11 @@
+.GrainsSelection {
+    &__color-picker-btn {
+        width: 42px;
+        height: 24px;
+    }
+
+    &__color-picker {
+        top: calc(50% - 170px);
+        left: calc(100% - 270px);
+    }
+}

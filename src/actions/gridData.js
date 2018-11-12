@@ -1,5 +1,13 @@
 // import { actionCreator } from '../helpers';
 
+export const SET_GRID_DATA = '@gridData/SET_GRID_DATA';
+export const setGridData = (dispatch) => (gridData) => {
+  dispatch({
+    type: SET_GRID_DATA,
+    payload: gridData,
+  });
+};
+
 export const CHANGE_COLORS_MAP = '@gridData/CHANGE_COLORS_MAP';
 export const changeColorsMap = (dispatch) => (colorsMap) => {
   dispatch({

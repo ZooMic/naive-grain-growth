@@ -1,10 +1,10 @@
 import { nextStep } from './common';
 
-export default (oldData, gridSize, onFinish, options) => {
-    return nextStep(mooreNeighbour, oldData, gridSize, onFinish, options);
+export default (oldData, gridSize, onFinish, options, grains) => {
+    return nextStep(mooreNeighbour, oldData, gridSize, onFinish, options, grains);
 }
 
-const mooreNeighbour = (cell, data, { moore2Probability }) => {
+const mooreNeighbour = (cell, data, { moore2Probability }, grains) => {
     const { x, y } = cell;
 
     if (data[y][x] >= 0) {
@@ -37,9 +37,11 @@ const mooreNeighbour = (cell, data, { moore2Probability }) => {
         for (let key in counter) {
             const k = Number(key);
             if (k > 0) {
-                if (counter[k] > max) {
-                    id = k;
-                    max = counter[k];
+                if (grains.findIndex(item => k === item) < 0) {
+                    if (counter[k] > max) {
+                        id = k;
+                        max = counter[k];
+                    }
                 }
             }
         }
@@ -58,9 +60,11 @@ const mooreNeighbour = (cell, data, { moore2Probability }) => {
         for (let key in counter) {
             const k = Number(key);
             if (k > 0) {
-                if (counter[k] > max) {
-                    id = k;
-                    max = counter[k];
+                if (grains.findIndex(item => k === item) < 0) {
+                    if (counter[k] > max) {
+                        id = k;
+                        max = counter[k];
+                    }
                 }
             }
         }
@@ -78,9 +82,11 @@ const mooreNeighbour = (cell, data, { moore2Probability }) => {
         for (let key in counter) {
             const k = Number(key);
             if (k > 0) {
-                if (counter[k] > max) {
-                    id = k;
-                    max = counter[k];
+                if (grains.findIndex(item => k === item) < 0) {
+                    if (counter[k] > max) {
+                        id = k;
+                        max = counter[k];
+                    }
                 }
             }
         }
@@ -103,9 +109,11 @@ const mooreNeighbour = (cell, data, { moore2Probability }) => {
         for (let key in counter) {
             const k = Number(key);
             if (k > 0) {
-                if (counter[k] > max) {
-                    id = k;
-                    max = counter[k];
+                if (grains.findIndex(item => k === item) < 0) {
+                    if (counter[k] > max) {
+                        id = k;
+                        max = counter[k];
+                    }
                 }
             }
         }

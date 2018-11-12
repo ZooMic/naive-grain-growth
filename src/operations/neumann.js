@@ -1,10 +1,10 @@
 import { nextStep } from './common';
 
-export default (oldData, gridSize, onFinish) => {
-    return nextStep(neumanNeighbour, oldData, gridSize, onFinish);
+export default (oldData, gridSize, onFinish, opt, grains) => {
+    return nextStep(neumanNeighbour, oldData, gridSize, onFinish, opt, grains);
 }
 
-const neumanNeighbour = (cell, data) => {
+const neumanNeighbour = (cell, data, opt, grains) => {
     const { x, y } = cell;
 
     if (data[y][x] >= 0) {
@@ -26,9 +26,11 @@ const neumanNeighbour = (cell, data) => {
         for (let key in counter) {
             const k = Number(key);
             if (k > 0) {
-                if (counter[k] > max) {
-                    id = k;
-                    max = counter[k];
+                if (grains.findIndex(item => k === item) < 0) {
+                    if (counter[k] > max) {
+                        id = k;
+                        max = counter[k];
+                    }
                 }
             }
         }

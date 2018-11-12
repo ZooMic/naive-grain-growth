@@ -7,8 +7,8 @@ import './ColorPicker.scss';
 
 const bem = BEMHelper('ColorPicker');
 
-const ColorPicker = ({ color, onChange, onClose, isVisible }) => (
-  <div {...bem('', { isVisible })}>
+const ColorPicker = ({ color, onChange, onClose, isVisible, className }) => (
+  <div {...bem('', { isVisible }, className)}>
     <SketchPicker color={color} onChange={onChange} />
     <button {...bem('close-btn')} onClick={onClose}>
       <Icon icon={icons.checkmark} size="large" />
@@ -17,6 +17,7 @@ const ColorPicker = ({ color, onChange, onClose, isVisible }) => (
 );
 
 ColorPicker.propTypes = {
+    className: PropTypes.string,
     isVisible: PropTypes.bool,
     color: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -25,6 +26,7 @@ ColorPicker.propTypes = {
 
 ColorPicker.defaultProps = {
   isVisible: true,
+  className: '',
 };
 
 export default ColorPicker;

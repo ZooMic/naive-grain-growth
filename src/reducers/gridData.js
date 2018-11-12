@@ -6,6 +6,7 @@ import {
   CHANGE_RANDOM_SEED,
   CHANGE_INITIALIZED,
   CHANGE_PROBABILITY,
+  SET_GRID_DATA,
 } from '../actions/gridData'
 
 const defaultState = {
@@ -26,6 +27,8 @@ const defaultState = {
   
 export default (state = defaultState, action) => {
   switch(action.type) {
+    case SET_GRID_DATA:
+      return { ...state, ...action.payload };
     case CHANGE_COLORS_MAP:
       return updateColorsMap(state, action.payload);
     case CHANGE_GRID:

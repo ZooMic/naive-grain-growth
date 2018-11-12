@@ -1,6 +1,8 @@
 import randomColor from 'random-color';
 import createGrid from '../helpers/createGrid';
 
+let globalId = 1;
+
 export const initialize = (randomSeed, { row, col }, grid, isInitialized, colMap) => {
   let data;
   if (grid.length === 0) {
@@ -11,7 +13,7 @@ export const initialize = (randomSeed, { row, col }, grid, isInitialized, colMap
   
   const colorsMap = colMap;
 
-  for (let i = 0; i < randomSeed; i++) {
+  for (let i = globalId; i < globalId + randomSeed; i++) {
     const r = Math.floor(Math.random() * row);
     const c = Math.floor(Math.random() * col);
     const id = i + 1;
@@ -24,10 +26,12 @@ export const initialize = (randomSeed, { row, col }, grid, isInitialized, colMap
     }
   }
 
+  globalId += randomSeed;
+
   return { data, colorsMap };
 }
 
-export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish, options) => {
+export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish, options, grains) => {
   let newData = new Array(row);
   for ( let i = 0; i < row; i++) {
     newData[i] = [];
@@ -38,7 +42,7 @@ export const nextStep = (neighbourDeterminator, data, { row, col }, onFinish, op
   
   for(let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
-      newData[i][j] = neighbourDeterminator({x: j, y: i}, data, options);
+      newData[i][j] = neighbourDeterminator({x: j, y: i}, data, options, grains);
     }
   }
 

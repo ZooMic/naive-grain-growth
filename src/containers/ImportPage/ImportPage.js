@@ -3,10 +3,11 @@ import FileDrop from 'react-file-drop';
 import MainLayout from '../MainLayout';
 import { NumberInput } from '../../components/Input';
 import GridCanvas from '../../components/GridCanvas';
-import { saveDataGrid, setCellSize, setGridSize } from '../../actions/current-grid';
+import { setGridData } from '../../actions/gridData';
 import store from '../../reducers';
 import getGridDataFromImage from './helper/getGridDataFromImage';
-import gridToData from '../../helpers/gridToData';
+import { gridToColorArray } from '../../helpers/gridToData';
+import createGrid from '../../helpers/createGrid';
 import { withRouter } from 'react-router-dom';
 import './style.scss';
 
@@ -18,59 +19,60 @@ class ImportPage extends Component {
     this.inputTarget = null;
     
     this.state = {
-      correctGrid: null,
-      grid: null,
-      data: null,
-      typeOfInput: null, // one of JSON | IMAGE | NO_MATCH if null - no file selected
-      cellSize: {
-        width: 1,
-        height: 1,
+      dataGrid: { 
+        cellSize: { width: 1, height: 1 },
+        gridSize: null,
+        grid: null,
+        colorsMap: null,
       },
-      gridSize: null,
+      isInitialized: false, // one of JSON | IMAGE | NO_MATCH if null - no file selected
       error: null,
+      typeOfInput: null,
+      currentGrid: {
+        data: null,
+        cellSize: null,
+        gridSize: null,
+        isInitialized: false,
+      },
     };
   }
 
   exportGridToData = () => {
-    const { typeOfInput, cellSize, grid } = this.state;
+    const { 
+      dataGrid: { colorsMap, grid, ...rest },
+      typeOfInput,
+    } = this.state;
     let data = null;
-    let gridSize = { rows: 0, columns: 0 };
-    let newGrid = null;
-
-    if (typeOfInput === 'JSON') {
-      data = gridToData(grid);
-      gridSize.rows = !!grid ? grid.length : 0;
-      gridSize.columns = (!!grid && grid.length > 0) ? grid[0].length : 0;
-      newGrid = grid;
+    const { cellSize, gridSize } = rest;
+    if (typeOfInput === "JSON") {
+      data = gridToColorArray(grid, colorsMap);
+      this.setState({ 
+        currentGrid: { data, gridSize, cellSize, isInitialized: true },
+      });
     } else {
-      newGrid = [];
-      let row = 0;
-      
-      for (let i = 0; i < grid.length; i+= cellSize.height) {
-        newGrid.push([]);
-        for (let j = 0; j < grid[i].length; j += cellSize.width) {
-          newGrid[row].push(grid[i][j]);
-        }
-        row += 1;
-      }
-
-      data = gridToData(newGrid);
-      gridSize.rows = !!newGrid ? newGrid.length : 0;
-      gridSize.columns = (!!newGrid && newGrid.length > 0) ? newGrid[0].length : 0;
-
+      data = gridToColorArray(grid, colorsMap, cellSize);
+      this.setState({ 
+        currentGrid: {
+          data,
+          gridSize: {
+            row: gridSize.row / cellSize.height,
+            col: gridSize.col / cellSize.width,
+          },
+          cellSize,
+          isInitialized: true,
+        },
+      });
     }
-
-    this.setState({ data, gridSize, correctGrid: newGrid });
   }
 
   jsonInputHandler = (file) => {
     let reader = new FileReader();
     reader.readAsText(file);
-    let grid = null;
+    let dataGrid = null;
     reader.onload = e => {
       try {
-        grid = JSON.parse(e.target.result);
-        this.setState({ grid }, () => {
+        dataGrid = JSON.parse(e.target.result);
+        this.setState({ dataGrid, isInitialized: true }, () => {
           this.exportGridToData();
         });
       } catch (error) {
@@ -82,8 +84,8 @@ class ImportPage extends Component {
   imageInputHandler = (file) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
-    const { cellSize } = this.state;
-    const ctx = this.imageCanvas.getContext("2d"); 
+    const { cellSize } = this.state.dataGrid;
+    const ctx = this.imageCanvas.getContext("2d");
     const img = new Image();
 
     reader.onload = e => {
@@ -92,8 +94,9 @@ class ImportPage extends Component {
         ctx.canvas.width = width;
         ctx.canvas.height = height;
         ctx.drawImage(img, 0, 0);
-        const grid = getGridDataFromImage(this.imageCanvas, cellSize);
-        this.setState({ grid }, () => {
+        const dataGrid = getGridDataFromImage(this.imageCanvas, cellSize);
+        
+        this.setState({ dataGrid, isInitialized: true }, () => {
           this.exportGridToData();
         });
       }
@@ -136,31 +139,45 @@ class ImportPage extends Component {
   }
 
   onInputChange = (parameterName) => (eventValue) => {
-    const cellSize = { ...(this.state.cellSize || {}) };
+    const dataGrid = this.state.dataGrid || {};
+    const cellSize = { ...(dataGrid.cellSize || {}) };
     cellSize[parameterName] = Number(eventValue);
-    this.setState({ cellSize }, () => {
+    this.setState({ dataGrid: { ...dataGrid, cellSize } }, () => {
       this.exportGridToData();
     });
   }
 
   onCancel = () => {
     this.setState({
-      grid: null,
-      data: null,
-      typeOfInput: null,
-      gridSize: null,
+      dataGrid: {
+        cellSize: { width: 1, height: 1 },
+      },
+      isInitialized: false,
       error: null,
+      typeOfInput: null,
+      currentGrid: {
+        data: null,
+        cellSize: null,
+        gridSize: null,
+        isInitialized: false,
+      }
     });
   }
 
   onSave = () => {
-    const { correctGrid, gridSize, cellSize } = this.state;
-    const { history } = this.props;
-    const { dispatch } = store;
-    saveDataGrid(dispatch)(correctGrid);
-    setGridSize(dispatch)(gridSize);
-    setCellSize(dispatch)(cellSize);
-    history.push('/simulator');
+    const { colorsMap } = this.state.dataGrid;
+    const colorsIdsMap = {};
+    for (const key in colorsMap) {
+      colorsIdsMap[colorsMap[key]] = key;
+    }
+
+    const { cellSize, gridSize, data } = this.state.currentGrid;
+    const grid = createGrid(gridSize.row, gridSize.col);
+    data.forEach(({x, y, color}) => {
+      grid[x][y] = Number(colorsIdsMap[color]);
+    });
+    setGridData(store.dispatch)({ ...this.state.dataGrid, grid, cellSize, gridSize, initialized: true });
+    this.props.history.push('/simulator');
   }
 
   onInputRef = (node) => {
@@ -174,9 +191,7 @@ class ImportPage extends Component {
   }
 
   onDragDropClick = (event) => {
-    const { grid, error, data } = this.state;
-    const isCorrectlyImported = grid !== null && error === null && data !== null;
-    if (isCorrectlyImported) {
+    if (this.state.isInitialized) {
       return null;
     }
     const { inputTarget } = this;
@@ -186,15 +201,14 @@ class ImportPage extends Component {
   render() {
     const {
       onImageCanvasRef, onInputChange, onFileInputChange, onCancel, onSave, onDragDropClick, onInputRef, onFileInputChanged,
-      state: { cellSize, typeOfInput, error, grid, data, gridSize },
+      state: { currentGrid, typeOfInput, error },
     } = this;
+    const { cellSize, gridSize, data, isInitialized } = currentGrid;
 
-    const isCorrectlyImported = grid !== null && error === null && data !== null;
-    
     return (
       <MainLayout>
         <div className="import-page" onClick={onDragDropClick} >
-          { !isCorrectlyImported ? <FileDrop
+          { !isInitialized ? <FileDrop
             onDrop={onFileInputChange}
             className="file-drop"
             targetClassName="file-drop-target"
@@ -202,21 +216,23 @@ class ImportPage extends Component {
           >
             <h3>Import file</h3>
           </FileDrop> : null }
-          { !isCorrectlyImported ? <input type="file" className="no-display" ref={onInputRef} onChange={onFileInputChanged} /> : null }
+          { !isInitialized ? <input type="file" className="no-display" ref={onInputRef} onChange={onFileInputChanged} /> : null }
           <canvas className="no-display" ref={onImageCanvasRef} />
 
-          { isCorrectlyImported ? <div className="after-import">
-            <div className="import-header">{typeOfInput === 'JSON' ? "JSON import" : "Image import"}</div>
-            <div className="input-and-buttons-wrapper">
-              <div className="input-group">
-                <span className="label">CELL SIZE</span>
-                <NumberInput label="Width" value={cellSize.width} onChange={onInputChange('width')} isRequired isInteger min={1} max={100} />
-                <NumberInput label="Height" value={cellSize.height} onChange={onInputChange('height')} isRequired isInteger min={1} max={100} />
-              </div>
-              <div className="buttons-group">
+          { isInitialized ? <div className="after-import">
+            <div className="import-header">
+              {typeOfInput === 'JSON' ? "JSON import" : "Image import"}
+              <div className="ImportPage__buttons-group">
                 <button className="cancel" onClick={onCancel} />
                 <button className="save" onClick={onSave} />
               </div>
+            </div>
+            <div className="input-and-buttons-wrapper">
+            { typeOfInput !== 'JSON' ? <div className="input-group">
+                <span className="label">CELL SIZE</span>
+                <NumberInput label="Width" value={cellSize.width} onChange={onInputChange('width')} isRequired isInteger min={1} max={100} />
+                <NumberInput label="Height" value={cellSize.height} onChange={onInputChange('height')} isRequired isInteger min={1} max={100} />
+              </div> : null }
             </div>
             <GridCanvas
             className="preview"
