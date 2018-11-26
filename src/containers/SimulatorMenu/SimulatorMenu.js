@@ -8,7 +8,9 @@ import { neumannProcedure, mooreProcedure, clearGrid, moore2Procedure } from '..
 import Inclusions from './Inclusions';
 import GridData from './GridData';
 import Export from './Export';
+import Boundary from './Boundary';
 import GrainsSelection from './GrainsSelection';
+import MonteCarlo from './MonteCarlo';
 import { getGridData } from '../../selectors/gridData';
 
 class SimulatorMenu extends Component {
@@ -39,6 +41,14 @@ class SimulatorMenu extends Component {
         <div className="inputs-group">
           <span className="label">GRAINS SELECTION</span>
           <GrainsSelection />
+        </div>
+        <div className="inputs-group">
+          <span className="label">BOUNDARIES</span>
+          <Boundary />
+        </div>
+        <div className="inputs-group">
+          <span className="label">MONTE CARLO</span>
+          <MonteCarlo />
         </div>
       </div>
     );

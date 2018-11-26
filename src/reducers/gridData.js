@@ -23,6 +23,9 @@ const defaultState = {
   randomSeed: 30,
   initialized: false,
   moore2Probability: 19,
+  boundaryGrid: null,
+  boundaryVisible: false,
+  tempGrid: [],
 };
   
 export default (state = defaultState, action) => {
