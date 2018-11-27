@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'; 
+import { connect } from 'react-redux';
+
+import Collapsible from '../../components/Collapsible';
  
 import MainLayout from '../MainLayout';
 import GridCanvas from '../../components/GridCanvas';
@@ -67,8 +69,10 @@ class SimulatorPage extends PureComponent {
     return (
       <MainLayout>
         <div className="simulator-page">
+          <Collapsible>
+            <SimulatorMenu />
+          </Collapsible>
           <GridCanvas className={`simulator-canvas ${isPickingColor ? 'picking-color' : ''}`} cellSize={cellSize} gridSize={gridSize} data={finalData} onRef={onRef} onClick={onColorPick} />
-          <SimulatorMenu />
         </div>
       </MainLayout>
     );

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
@@ -13,7 +13,7 @@ import GrainsSelection from './GrainsSelection';
 import MonteCarlo from './MonteCarlo';
 import { getGridData } from '../../selectors/gridData';
 
-class SimulatorMenu extends Component {
+class SimulatorMenu extends PureComponent {
   render() {
     const { initialized } = this.props;
 

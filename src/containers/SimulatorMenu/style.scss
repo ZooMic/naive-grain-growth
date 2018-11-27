@@ -1,35 +1,26 @@
 .simulator-menu {
-  min-width: 320px;
-  width: 40%;
   background-color: #6c5170;
-  margin-right: 2em;
   border: 1em solid #7f1e4d;
-  border-left: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: start;
 
-  & .overflow {
-    position: absolute;
-    z-index: 99;
+  & .close-sketch-picker {
+    position: relative;
+    top: -26px;
+    left: calc(100% - 28px);
+    border: none;
+    background: none;
+    fill: white;
+    padding: 0px;
+    background: #FF4081;
+    border-radius: 35px;
+    border: 3px solid #FF4081;
+    display: flex;
 
-    & .close-sketch-picker {
-      position: relative;
-      top: -26px;
-      left: calc(100% - 28px);
-      border: none;
-      background: none;
-      fill: white;
-      padding: 0px;
-      background: #FF4081;
-      border-radius: 35px;
-      border: 3px solid #FF4081;
-      display: flex;
-
-      &:hover {
-        fill: lightgreen;
-      }
+    &:hover {
+      fill: lightgreen;
     }
   }
 }
@@ -40,7 +31,7 @@
   text-align: center;
   background-color: #ffffff26;
   border-radius: 1em;
-  max-width: 7em;
+  max-width: 12em;
   & .label {
     display: block;
     font-weight: 900;
