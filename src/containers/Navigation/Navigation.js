@@ -17,6 +17,10 @@ const routes = [{
   path: '/simulator',
   icon: simulatorIcon,
 }, {
+  text: 'SIMULATOR 2',
+  path: '/simulator2',
+  icon: simulatorIcon,
+}, {
   text: 'IMPORT',
   path: '/import',
   icon: importIcon,

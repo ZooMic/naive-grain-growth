@@ -1,0 +1,25 @@
+.simulator-page {
+  // padding: 0 1em;
+  width: 100%;
+  display: inline-flex;
+}
+
+.simulator-canvas {
+  width: 100%;
+  height: calc(100vh - 300px);
+  background-color: black;
+  border: 1em solid #7f1e4d;
+  display: flex;
+  // justify-content: center;
+  // align-items: center;
+  margin: 0 1em;
+  overflow: auto;
+
+  & canvas {
+      background-color: #a587a4;
+  }
+}
+
+.picking-color canvas {
+  cursor: url('../../assets/pipette.png') 0 45, auto;
+}

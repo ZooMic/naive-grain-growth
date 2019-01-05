@@ -5,11 +5,14 @@ import gridDataReducer from './gridData';
 import grainsSelectionReducer from './grainsSelection';
 import monteCarloReducer from './monteCarlo';
 
+import mainReducer from './main';
+
 const rootReducer = combineReducers({
     inclusions: inclusionsReducer,
     gridData: gridDataReducer,
     grainsSelection: grainsSelectionReducer,
     monteCarlo: monteCarloReducer,
+    main: mainReducer,
 });
 
 const store = createStore(

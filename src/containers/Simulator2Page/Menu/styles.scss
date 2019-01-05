@@ -1,0 +1,45 @@
+.menu {
+  background-color: #6c5170;
+  border: 1em solid #7f1e4d;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: start;
+
+  & .close-sketch-picker {
+    position: relative;
+    top: -26px;
+    left: calc(100% - 28px);
+    border: none;
+    background: none;
+    fill: white;
+    padding: 0px;
+    background: #FF4081;
+    border-radius: 35px;
+    border: 3px solid #FF4081;
+    display: flex;
+
+    &:hover {
+      fill: lightgreen;
+    }
+  }
+}
+
+.inputs-group {
+  padding: 0.3em 0;
+  margin: 5px 0px;
+  text-align: center;
+  background-color: #ffffff26;
+  border-radius: 1em;
+  max-width: 10em;
+  & .label {
+    display: block;
+    font-weight: 900;
+    color: whitesmoke;
+  }
+
+  & .mui-btn + .mui-btn {
+    margin-left: 0px;
+    min-width: 7em;
+  }
+}
