@@ -5,7 +5,7 @@ import { setGridData } from '../../actions/gridData';
 
 export default () => {
     const state = store.getState();
-    const { gridSize, grid, colorsMap } = getGridData(state);
+    const { gridSize, grid } = getGridData(state);
 
     const newGrid = [];
     for (let i = 0; i < gridSize.row; i++) {

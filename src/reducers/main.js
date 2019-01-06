@@ -2,10 +2,18 @@ export const defaultState = {
     grid: [],
     colors: [],
     colorsAmount: 10,
-    mcIterations: 100,
-    size: { rows: 150, cols: 150 },
-    cellSize: { width: 4, height: 4 },
+    mcIterations: 200,
+    size: { rows: 100, cols: 100 },
+    cellSize: { width: 5, height: 5 },
     isInitialized: false,
+    
+    isHomogenous: true, // if false => heterogenous
+    isGenerated: false, // for the SRX purpose - you can not distribute energy if there is no initial structure
+    nucleonsAmount: 100,
+    nucleonsIterations: 25,
+    nucleonsDistrType: 'constant-anywhere',
+
+    operationId: 0,
 };
   
 export default (state = defaultState, action) => {

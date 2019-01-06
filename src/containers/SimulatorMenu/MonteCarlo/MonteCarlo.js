@@ -1,11 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 
 import Button from 'muicss/lib/react/button';
-import startMonteCarlo from '../../../operations/monte-carlo';
 
 class MonteCarlo extends PureComponent {
   onStart = () => {
-    startMonteCarlo();
   }
 
   render() {

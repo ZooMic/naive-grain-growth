@@ -1,0 +1,14 @@
+.custom-select {
+    width: 95px;
+    height: 30px;
+    border-radius: 3px;
+    border: none;
+    background: #fe4580;
+    color: #fff1f6;
+    font-weight: 600;
+
+    &:disabled{
+        background: #cb5380;
+        color: #ccc3cc;
+    }
+}

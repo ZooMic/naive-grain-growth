@@ -7,8 +7,10 @@ export default function createGrid(size) {
             grid[i].push({
                 isActive: true,
                 color: null,
+                energy: 0,
             });
         }
     }
     return grid;
 }
+

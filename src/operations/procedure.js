@@ -2,7 +2,6 @@ import { initialize } from './common';
 import methodFactory from './methods';
 
 import { getGridData } from '../selectors/gridData';
-import { getInclusionsData } from '../selectors/inclusions';
 import { getGrainsSelection } from '../selectors/grainsSelection';
 import { changeColorsMap, changeGrid, changeInitialized, setGridData } from '../actions/gridData';
 import { changeInclusionsParameters } from '../actions/inclusions';

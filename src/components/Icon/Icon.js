@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BemHelper from 'react-bem-helper';
 import './Icon.scss';
-
-const bem = BemHelper('Icon');
 
 const SIZE = {
   small: 10,

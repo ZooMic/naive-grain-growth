@@ -29,7 +29,6 @@ export const gridToColorArray = (grid, colorsMap, cellSize) => {
 
   const row = grid.length;
   const col = grid[0] && grid[0].length;
-  let r = 0;
   for (let i = 0; i < row; i+=shiftRow) {
     for (let j = 0; j < col; j+=shiftCol) {
       if (grid[i][j] >= 0) {
