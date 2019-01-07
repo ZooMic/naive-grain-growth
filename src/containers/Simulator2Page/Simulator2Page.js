@@ -5,20 +5,29 @@ import { connect } from 'react-redux';
 import Collapsible from '../../components/Collapsible';
 import MainLayout from '../MainLayout';
 import GridCanvas from '../../components/GridCanvas';
+
 import Menu from './Menu';
 import { setGlobalCanvas } from '../../helpers/globalCanvas';
 import './style.scss';
 
 import { getMain } from '../../reducers/main';
-import convertGrid from './logic/convertGrid';
+import { convertGrid, convertGridEnergy } from './logic/convertGrid';
 
 
-function Simulator2Page ({ cellSize, size, isInitialized, grid }) {
+function Simulator2Page ({ cellSize, size, isInitialized, grid, isEnergyView }) {
   const setRef = (canvas) => {
     setGlobalCanvas(canvas);
   }
 
-  let finalData = isInitialized ? convertGrid(grid, size) : [];
+  let finalData = [];
+  
+  if (isInitialized) {
+    if (isEnergyView) {
+      finalData = convertGridEnergy(grid, size);
+    } else {
+      finalData = convertGrid(grid, size);
+    }
+  }
 
   return (
   <MainLayout>

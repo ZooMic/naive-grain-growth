@@ -3,73 +3,55 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Button from 'muicss/lib/react/button';
-import { NumberInput } from '../../../components/Input';
 
 import 'muicss/dist/css/mui.css';
 import './styles.scss';
 
-import mcGrowth from '../logic/mc-growth';
-import createGrid from '../logic/create-grid';
-import createColors from '../logic/create-colors';
+import { getMain, setMainParameters } from '../../../reducers/main';
+import caGrowth from '../logic/ca-growth';
+import { setWorker, terminateWorker } from '../logic/worker-management';
 
-import { getMain, setMainParameters, defaultState } from '../../../reducers/main';
-import { setWorker, terminateWorker } from '../logic/worker-management'
+function CellularAutomata({ setMain, ...props}) {
 
-let worker = null;
+    const { caType } = props;
 
-function MonteCarlo({ size, isInitialized, setMain, colorsAmount, ...restProps }) {
-
-    const onClear = () => {
+    const onTypeChanged = (type) => () => setMain({caType: type});
+    const onRun = () => {
+        console.log('RUN');
         terminateWorker();
-        setMain(defaultState);
-    }
-
-    const onInitialize = () => {
-        terminateWorker();
-        const grid = createGrid(size);
-        const colors = createColors(colorsAmount);
-        setMain({ isInitialized: true, grid, colors });
-    }
-
-    const onGridChanged = (event) => {
-        const grid = event.data;
-        setMain({ grid });
-    }
-
-    const onMcGrowth = () => {
-        terminateWorker();
-        const worker = mcGrowth({
-            ...restProps,
-            size,
-            isInitialized,
-            colorsAmount,
-            callback: onGridChanged,
-            callbackTime: 250,
+        const worker = caGrowth({
+            ...props,
+            callback: (event) => {
+                const { grid, finished } = event.data;
+                if (finished) {
+                    console.log('FINISHED!');
+                    setMain({ grid, isGenerated: true});
+                } else {
+                    console.log("NOT YET");
+                    setMain({ grid });
+                }
+            }
         });
         setWorker(worker);
     }
 
-    const onInputChange = (propName) => (eventValue) => {
-        const value = Number(eventValue);
-        setMain({
-            [propName]: value,
-        });
-    }
-
-    const { mcIterations } = restProps;
+    const isNeuman = caType === 'neuman';
+    const isMoore = caType === 'moore';
+    const isMoore2 = caType === 'moore2';
 
     return (
         <div className='inputs-group'>
-            <span className="label">Monte Carlo</span>
-            <NumberInput label="Number of steps" value={mcIterations} onChange={onInputChange('mcIterations')} isRequired isInteger min={1} max={Infinity} />
-            <Button size="small" variant="rised" color="accent" onClick={onInitialize}>INITIALIZE</Button>
-            <Button size="small" variant="rised" color="accent" onClick={onClear} disabled={!isInitialized}>CLEAR</Button>
-            <Button size="small" variant="rised" color="accent" onClick={onMcGrowth} disabled={!isInitialized}>RUN</Button>
+            <span className="label">CellularAutomata</span>
+            <Button size="small" variant="rised" color="accent" onClick={onTypeChanged('neuman')} disabled={isNeuman}>Neuman</Button>
+            <Button size="small" variant="rised" color="accent" onClick={onTypeChanged('moore')} disabled={isMoore}>Moore</Button>
+            <Button size="small" variant="rised" color="accent" onClick={onTypeChanged('moore2')} disabled={isMoore2}>Moore2</Button>
+            <span className="label">&zwnj;</span>
+            <Button size="small" variant="rised" color="accent" onClick={onRun}>Run</Button>
         </div>
     );
 }
 
-MonteCarlo.propTypes = {
+CellularAutomata.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
@@ -80,4 +62,4 @@ const mapDispatchToProps = (dispatch) => ({
     setMain: setMainParameters(dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MonteCarlo);
+export default connect(mapStateToProps, mapDispatchToProps)(CellularAutomata);

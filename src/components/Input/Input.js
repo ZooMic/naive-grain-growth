@@ -74,17 +74,18 @@ class Input extends PureComponent{
   render() {
     const {
       state: { currentValue, validation: { isValid, message } },
-      props: { label, value },
+      props: { label, value, disabled },
       onChange, onBlur,
     } = this;
 
-    const invalid = !isValid ? 'invalid' : '';
+    // const invalid = !isValid ? 'invalid' : '';
+    const invalid = !isValid;
 
     return (
-      <div {...bem('', invalid)} >
-        <div {...bem('label', invalid)}>{label}</div>
-        <div {...bem('input', invalid)}>
-          <input value={currentValue} onChange={onChange} onBlur={onBlur} />
+      <div {...bem('', { invalid, disabled })} >
+        <div {...bem('label', { invalid, disabled })}>{label}</div>
+        <div {...bem('input', { invalid })}>
+          <input value={currentValue} onChange={onChange} onBlur={onBlur} disabled={disabled}/>
             { !isValid ? <Tooltip
               placement="left"
               trigger={['click', 'hover']}
@@ -108,12 +109,14 @@ Input.propTypes = {
   isRequired: PropTypes.bool,
   validator: PropTypes.func,
   validators: PropTypes.arrayOf(PropTypes.func),
+  disabled: PropTypes.bool,
 };
 
 Input.defaultProps = {
   isRequired: false,
-  validator: null, 
+  validator: null,
   validators: [],
+  disabled: false,
 };
 
 export default Input;

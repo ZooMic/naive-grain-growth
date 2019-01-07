@@ -14,6 +14,7 @@ const NumberInput = (props) => {
     min,
     max,
     isInteger,
+    disabled,
   } = props;
   
   const fullValidators = [...validators];
@@ -32,6 +33,7 @@ const NumberInput = (props) => {
       isRequired={isRequired}
       validators={fullValidators}
       validator={validator}
+      disabled={disabled}
     />
   );
 }
@@ -46,6 +48,7 @@ NumberInput.propTypes = {
   min: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   max: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   isInteger: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 NumberInput.defaultProps = {
@@ -55,6 +58,7 @@ NumberInput.defaultProps = {
   min: false,
   max: false,
   isInteger: false,
+  disabled: false,
 };
 
 export default NumberInput;

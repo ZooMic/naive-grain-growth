@@ -105,9 +105,7 @@ function MonteCarlo({ size, isInitialized,  setMain, colorsAmount, ...restProps 
             <Button size="small" variant="rised" color="accent" onClick={onClear} disabled={!isInitialized}>CLEAR</Button>
             <Button size="small" variant="rised" color="accent" onClick={onMcGrowth} disabled={!isInitialized}>RUN</Button>
             <span className="label">{currentStep !== 0 ? `${Math.ceil(currentStep * 100 / mcIterations)} %` : ''}&zwnj;</span>
-            <span className="label">Energy distribution</span>
-            <Switch checked={isHomogenous} labelLeft="Heterogenous" labelRight="Homogenous" onChange={onEnergyDistChange}/>
-            <span className="label">Nucleons distribution</span>
+            {/* <span className="label">Nucleons distribution</span>
             <Select value={nucleonsDistrType} disabled={!isGenerated} onChange={onNucleonsDistrTypeChange}>
                 <option value='constant-anywhere'>Constant - Anywhere</option>
                 <option value='constant-boundary'>Constant - Boundary</option> 
@@ -118,7 +116,7 @@ function MonteCarlo({ size, isInitialized,  setMain, colorsAmount, ...restProps 
             </Select>
             <NumberInput label="Amount" value={nucleonsAmount} onChange={onInputChange('nucleonsAmount')} isRequired isInteger min={1} max={Infinity} />
             <NumberInput label="Iterations" value={nucleonsIterations} onChange={onInputChange('nucleonsIterations')} isRequired isInteger min={1} max={nucleonsAmount} />
-            <Button size="small" variant="rised" color="accent" onClick={onSrxStart} disabled={!isGenerated}>RUN SRX</Button>
+            <Button size="small" variant="rised" color="accent" onClick={onSrxStart} disabled={!isGenerated}>RUN SRX</Button> */}
         </div>
     );
 }

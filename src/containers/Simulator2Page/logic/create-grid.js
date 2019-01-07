@@ -5,7 +5,7 @@ export default function createGrid(size) {
         grid.push([]);
         for(let j = 0; j < cols; j++) {
             grid[i].push({
-                isActive: true,
+                isActive: false,
                 color: null,
                 energy: 0,
             });

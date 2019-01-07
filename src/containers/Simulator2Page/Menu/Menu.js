@@ -5,6 +5,8 @@ import 'muicss/dist/css/mui.css';
 import './styles.scss';
 import MonteCarlo from './MonteCarlo';
 import Grid from './Grid';
+import EnergyDistribution from './EnergyDistribution';
+import CellularAutomata from './CellularAutomata';
 
 
 
@@ -13,7 +15,9 @@ function Menu(props) {
   return (
     <div className='menu'>
       <Grid />
+      <CellularAutomata />
       <MonteCarlo />
+      <EnergyDistribution />
     </div>
   );
 }

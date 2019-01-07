@@ -1,13 +1,26 @@
 export const defaultState = {
+    // grid parameters
     grid: [],
     colors: [],
     colorsAmount: 10,
-    mcIterations: 200,
     size: { rows: 100, cols: 100 },
     cellSize: { width: 5, height: 5 },
     isInitialized: false,
     
+    // CA parameters
+    caType: 'moore', // 'neuman', 'moore', 'moore2'
+    
+    // MC parameters
+    mcIterations: 200,
+    
+    // energy distribution
     isHomogenous: true, // if false => heterogenous
+    isEnergyView: false,
+    maxEnergy: 7,
+    minEnergy: 2,
+    avgEnergy: 5,
+
+
     isGenerated: false, // for the SRX purpose - you can not distribute energy if there is no initial structure
     nucleonsAmount: 100,
     nucleonsIterations: 25,
