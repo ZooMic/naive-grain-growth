@@ -5,7 +5,12 @@ import { NumberInput } from '../../../components/Input';
 import 'muicss/dist/css/mui.css';
 import './styles.scss';
 
-import { getMain, setMainParameters } from '../../../reducers/main';
+import Button from 'muicss/lib/react/button';
+import createGrid from '../logic/create-grid';
+import createColors from '../logic/create-colors';
+import { getMain, setMainParameters, defaultState } from '../../../reducers/main';
+import { terminateWorker} from '../logic/worker-management';
+
 
 function Grid({ size, cellSize, setMain, colorsAmount, ...restProps }) {
     const onInputChange = (propName) => (eventValue) => {
@@ -22,6 +27,28 @@ function Grid({ size, cellSize, setMain, colorsAmount, ...restProps }) {
         }
     }
 
+    const onClear = () => {
+        terminateWorker();
+        setMain({
+            grid: [],
+            colors: [],
+            colorsAmount: 10,
+            size: { rows: 100, cols: 100 },
+            cellSize: { width: 5, height: 5 },
+            isInitialized: false,
+            isGenerated: false,
+            selection: [],
+            isSelectionOn: false,
+        });
+    }
+
+    const onInitialize = () => {
+        terminateWorker();
+        const grid = createGrid(size);
+        const colors = createColors(colorsAmount);
+        setMain({ isInitialized: true, grid, colors, isGenerated: false, currentStep: 0 });
+    }
+
     return (
         <div className='inputs-group'>
             <span className="label">Grid parameters</span>
@@ -32,6 +59,9 @@ function Grid({ size, cellSize, setMain, colorsAmount, ...restProps }) {
             <span className="label">Cell size</span>
             <NumberInput label="Width" value={cellSize.width} onChange={onInputChange('cellSize.width')} isRequired isInteger min={1} max={Infinity} />
             <NumberInput label="Height" value={cellSize.height} onChange={onInputChange('cellSize.height')} isRequired isInteger min={1} max={Infinity} />
+            <span className="label">&zwnj;</span>
+            <Button size="small" variant="rised" color="accent" onClick={onInitialize}>INITIALIZE</Button>
+            <Button size="small" variant="rised" color="accent" onClick={onClear}>CLEAR</Button>
         </div>
     );
 }

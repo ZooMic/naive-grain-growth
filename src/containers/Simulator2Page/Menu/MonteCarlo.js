@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -20,28 +20,12 @@ import { getMain, setMainParameters, defaultState } from '../../../reducers/main
 import { setWorker, terminateWorker} from '../logic/worker-management';
 
 function MonteCarlo({ size, isInitialized,  setMain, colorsAmount, ...restProps }) {
-    const [currentStep, setCurrentStep] = useState(0);
 
-    const { mcIterations, isHomogenous, isGenerated, nucleonsDistrType, nucleonsAmount, nucleonsIterations, operationId } = restProps;
-
-    const onClear = () => {
-        terminateWorker();
-        setMain(defaultState);
-        setCurrentStep(0);
-    }
-
-    const onInitialize = () => {
-        terminateWorker();
-        setCurrentStep(0);
-        const grid = createGrid(size);
-        const colors = createColors(colorsAmount);
-        setMain({ isInitialized: true, grid, colors, isGenerated: false });
-    }
+    const { mcIterations, isHomogenous, isGenerated, nucleonsDistrType, nucleonsAmount, nucleonsIterations, operationId, currentStep } = restProps;
 
     const onGridChanged = (event) => {
         const { grid, currentStep, finished } = event.data;
-        setCurrentStep(currentStep);
-        setMain({ grid });
+        setMain({ grid, currentStep });
 
         if (finished) {
             setMain({
@@ -101,8 +85,6 @@ function MonteCarlo({ size, isInitialized,  setMain, colorsAmount, ...restProps 
         <div className='inputs-group'>
             <span className="label">Monte Carlo</span>
             <NumberInput label="Number of steps" value={mcIterations} onChange={onInputChange('mcIterations')} isRequired isInteger min={1} max={Infinity} />
-            <Button size="small" variant="rised" color="accent" onClick={onInitialize}>INITIALIZE</Button>
-            <Button size="small" variant="rised" color="accent" onClick={onClear} disabled={!isInitialized}>CLEAR</Button>
             <Button size="small" variant="rised" color="accent" onClick={onMcGrowth} disabled={!isInitialized}>RUN</Button>
             <span className="label">{currentStep !== 0 ? `${Math.ceil(currentStep * 100 / mcIterations)} %` : ''}&zwnj;</span>
             {/* <span className="label">Nucleons distribution</span>

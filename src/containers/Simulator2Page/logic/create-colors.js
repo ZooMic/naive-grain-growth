@@ -1,4 +1,5 @@
 const globalColors = [];
+let colorId = 0;
 
 const genColor = () => {
     let red   = Math.floor(Math.random() * 256).toString(16);
@@ -23,7 +24,7 @@ export default function createColors(colorsAmount) {
     const colors = [];
     for (var i = 0; i < colorsAmount; ++i) {
         colors.push({
-            id: i,
+            id: colorId++,
             hash: genColor(),
         });
     }

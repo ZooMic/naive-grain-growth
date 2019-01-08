@@ -22,7 +22,7 @@ function mcGrowthWorker() {
         const items = [];
         for (var i = 0; i < rows; ++i) {
             for (var j = 0; j < cols; ++j) {
-                if (grid[i][j].isActive) {
+                if (!grid[i][j].color) {
                     items.push(grid[i][j]);
                 }
             }

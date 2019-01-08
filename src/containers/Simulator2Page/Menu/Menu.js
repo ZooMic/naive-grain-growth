@@ -7,6 +7,7 @@ import MonteCarlo from './MonteCarlo';
 import Grid from './Grid';
 import EnergyDistribution from './EnergyDistribution';
 import CellularAutomata from './CellularAutomata';
+import Selection from './Selection';
 
 
 
@@ -18,6 +19,7 @@ function Menu(props) {
       <CellularAutomata />
       <MonteCarlo />
       <EnergyDistribution />
+      <Selection />
     </div>
   );
 }

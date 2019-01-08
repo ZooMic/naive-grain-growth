@@ -9,10 +9,12 @@ export const defaultState = {
     
     // CA parameters
     caType: 'moore', // 'neuman', 'moore', 'moore2'
+    moore2Probability: 10,
     
     // MC parameters
     mcIterations: 200,
-    
+    currentStep: 0,
+
     // energy distribution
     isHomogenous: true, // if false => heterogenous
     isEnergyView: false,
@@ -20,6 +22,10 @@ export const defaultState = {
     minEnergy: 2,
     avgEnergy: 5,
 
+    // selection
+    isSelectionOn: false,
+    selected: [], // { id: , hash: oldColor }
+    copied: [], // grid cell
 
     isGenerated: false, // for the SRX purpose - you can not distribute energy if there is no initial structure
     nucleonsAmount: 100,

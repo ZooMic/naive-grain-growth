@@ -1,13 +1,26 @@
-export const convertGrid = (grid, size) => {
+export const convertGrid = (grid, size, selected = []) => {
     const data = [];
     const { rows, cols } = size;
 
     for (let x = 0; x < rows; ++x) {
         for (let y = 0; y < cols; ++y) {
             if (grid[x][y].color) {
-                data.push({
-                    x, y, color: grid[x][y].color.hash,
-                });
+                let isSelected = false;
+                for (let i = 0; i < selected.length; i++) {
+                    if (grid[x][y].color.id === selected[i].id) {
+                        isSelected = true;
+                    }
+                }
+                if (isSelected) {
+                    data.push({
+                        x, y, color: '#FF0000',
+                    });
+                } else {
+                    data.push({
+                        x, y, color: grid[x][y].color.hash,
+                    });
+                }
+                
             }
         }
     }
